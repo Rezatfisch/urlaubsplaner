@@ -1,0 +1,570 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#ffffff">
+  <title>Urlaubsplaner 5.1</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <style>
+    :root{--bg:#f3f5f8;--card:#fff;--text:#182132;--muted:#6b7280;--line:#dfe4ea;--soft:#eef2f6;--accent:#172033;--ok:#eaf7ee}
+    *{box-sizing:border-box} body{margin:0;font-family:system-ui,-apple-system,Segoe UI,sans-serif;background:var(--bg);color:var(--text)}
+    header{position:sticky;top:0;z-index:1000;background:#fff;border-bottom:1px solid var(--line);padding:14px 17px;display:flex;justify-content:space-between;align-items:center}
+    .title{font-weight:850;font-size:1.12rem}.badge{background:var(--soft);border-radius:999px;padding:5px 9px;font-size:.78rem}
+    main{max-width:1240px;margin:auto;padding:14px}.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:12px}
+    .span4{grid-column:span 4}.span5{grid-column:span 5}.span7{grid-column:span 7}.span8{grid-column:span 8}.span12{grid-column:span 12}
+    .card{background:var(--card);border-radius:17px;padding:15px;box-shadow:0 2px 10px rgba(15,23,42,.06)}
+    h2,h3{margin:0 0 9px}h2{font-size:1.06rem}h3{font-size:.98rem}
+    input,select,textarea,button{font:inherit;width:100%;padding:9px 10px;border:1px solid #cfd6df;border-radius:10px;background:#fff;margin:4px 0}
+    textarea{resize:vertical}button{cursor:pointer;font-weight:700}.primary{background:var(--accent);color:#fff;border-color:var(--accent)}.ghost{background:var(--soft)}
+    .danger{background:#fff4f4;color:#a51d1d;border-color:#efc2c2}.success{background:var(--ok)}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:7px}.row3{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}.small{font-size:.84rem;color:var(--muted)}
+    .trip{padding:11px;border:1px solid var(--line);border-radius:13px;margin:7px 0;cursor:pointer}.trip.active{border:2px solid var(--accent);background:#fafbfc}
+    .toolbar{display:flex;gap:6px;flex-wrap:wrap}.toolbar button{width:auto;padding:7px 9px;margin:0}.hidden{display:none!important}
+    #map{height:520px;border-radius:14px;background:#e8edf2;overflow:hidden}
+    .summary{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}.metric{background:var(--soft);border-radius:11px;padding:8px 10px}.metric b{display:block;font-size:1rem}
+    .stop{display:grid;grid-template-columns:36px 1fr auto;gap:8px;padding:10px;border:1px solid var(--line);border-radius:13px;margin:8px 0}
+    .stopnum{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:var(--accent);color:#fff;font-weight:800}
+    .stop-title{font-weight:800}.stopactions{display:flex;gap:4px}.stopactions button{width:34px;padding:6px;margin:0}
+    .tag{display:inline-block;background:var(--soft);border-radius:999px;padding:3px 7px;font-size:.74rem;margin:4px 4px 0 0}
+    .routebox,.airesult,.searchresult{white-space:pre-wrap;background:#fafbfc;border:1px solid var(--line);border-radius:11px;padding:10px;margin-top:7px}
+    .searchresult{cursor:pointer}.searchresult:hover{background:#f1f5f9}
+    .costline{display:flex;justify-content:space-between;border-bottom:1px dashed var(--line);padding:5px 0}.costline:last-child{border:0}
+    
+    .timeline{position:relative;margin:8px 0 0 15px;padding-left:25px;border-left:3px solid var(--line)}
+    .daycard{position:relative;background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px;margin:0 0 12px}
+    .daycard:before{content:"";position:absolute;left:-34px;top:18px;width:15px;height:15px;border-radius:50%;background:var(--accent);border:3px solid #fff;box-shadow:0 0 0 1px var(--line)}
+    .dayhead{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.daytitle{font-weight:850}
+    .leg{margin:7px 0 0;padding:7px 9px;background:var(--soft);border-radius:9px;font-size:.83rem}
+    .routeTotals{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:8px 0}.routeTotals .metric{text-align:center}
+
+    
+    .tabs{display:flex;gap:6px;overflow:auto;margin:8px 0}.tabs button{width:auto;white-space:nowrap}
+    .poi{border:1px solid var(--line);border-radius:12px;padding:9px;margin:7px 0}
+    .checkitem{display:flex;align-items:center;gap:8px;padding:7px;border-bottom:1px solid var(--line)}.checkitem input{width:auto}
+    .docitem{display:flex;justify-content:space-between;gap:8px;padding:7px 0;border-bottom:1px solid var(--line)}
+    .forecast{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:7px}.forecast>div{background:var(--soft);padding:8px;border-radius:10px}
+    .budgetbar{height:12px;background:var(--soft);border-radius:999px;overflow:hidden}.budgetbar>div{height:100%;background:var(--accent)}
+    .sharebox{white-space:pre-wrap;background:#fafbfc;border:1px solid var(--line);border-radius:11px;padding:10px}
+    
+    .kpiGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px}.kpi{padding:10px;background:var(--soft);border-radius:12px}.kpi b{display:block;font-size:1.08rem}
+    .alert{padding:9px;border-radius:10px;background:#fff6df;border:1px solid #ead39b;margin:6px 0}.good{background:#eef9f1;border-color:#b8dfc1}
+    .miniTable{width:100%;border-collapse:collapse}.miniTable td,.miniTable th{padding:7px;border-bottom:1px solid var(--line);text-align:left}
+    @media(max-width:900px){.span4,.span5,.span7,.span8,.span12{grid-column:1/-1}.row,.row3,.routeTotals{grid-template-columns:1fr}#map{height:390px}.stop{grid-template-columns:34px 1fr}.stopactions{grid-column:2}}
+  </style>
+</head>
+<body>
+<header><div><div class="title">🌍 Urlaubsplaner</div><div class="small">Reisen · Route · Stellplätze · Kosten · KI</div></div><div class="badge">Version 5.1</div></header>
+
+<main><div class="grid">
+<section class="card span12" id="cloudCard">
+ <h2>☁️ Benutzerkonto & Synchronisierung</h2>
+ <div id="cloudLoggedOut">
+   <div class="row"><input id="authEmail" type="email" placeholder="E-Mail"><input id="authPassword" type="password" placeholder="Passwort"></div>
+   <div class="toolbar"><button class="primary" onclick="cloudSignIn()">Anmelden</button><button onclick="cloudSignUp()">Konto erstellen</button></div>
+   <div id="authStatus" class="small">Supabase-Verbindung wird geprüft …</div>
+ </div>
+ <div id="cloudLoggedIn" class="hidden">
+   <div class="toolbar"><button class="primary" onclick="cloudSyncUp()">Jetzt synchronisieren</button><button onclick="cloudSyncDown()">Cloud laden</button><button onclick="cloudMigrate()">Lokale Daten in Cloud übernehmen</button><button onclick="cloudSignOut()">Abmelden</button></div>
+   <div id="cloudUser" class="small"></div><div id="syncStatus" class="small"></div>
+ </div>
+</section>
+<section class="card span12">
+ <h2>👥 Gemeinsame Reisen</h2>
+ <div class="row3">
+   <input id="shareTripId" placeholder="Reise-ID (Cloud)">
+   <input id="shareEmail" type="email" placeholder="E-Mail der eingeladenen Person">
+   <select id="shareRole"><option value="editor">Bearbeiten</option><option value="viewer">Nur ansehen</option></select>
+ </div>
+ <div class="toolbar"><button class="primary" onclick="inviteMember()">Person einladen</button><button onclick="publishSelectedTrip()">Aktuelle Reise in Cloud veröffentlichen</button><button onclick="loadSharedTrips()">Gemeinsame Reisen laden</button></div>
+ <div id="shareStatus" class="small"></div>
+ <div id="sharedTrips"></div>
+</section>
+
+<section class="card span4">
+  <h2>Neue Reise</h2>
+  <input id="title" placeholder="z. B. Baltikum 2026">
+  <div class="row"><input id="start" type="date"><input id="end" type="date"></div>
+  <input id="origin" placeholder="Startort"><input id="destination" placeholder="Ziel / Region">
+  <select id="mode"><option>Wohnmobil</option><option>Auto</option><option>Flugreise</option><option>Bahn</option><option>Fahrrad</option></select>
+  <button class="primary" onclick="addTrip()">Reise anlegen</button>
+  <hr style="border:0;border-top:1px solid var(--line);margin:14px 0">
+  <h2>Meine Reisen</h2><div id="trips"></div>
+</section>
+
+<section class="card span8">
+  <div id="noTrip" class="small">Bitte links eine Reise anlegen oder auswählen.</div>
+  <div id="detail" class="hidden">
+    <div class="toolbar" style="float:right"><button class="ghost" onclick="exportTrip()">Export</button><button class="danger" onclick="removeSelectedTrip()">Reise löschen</button></div>
+    <h2 id="detailTitle"></h2><div id="detailMeta" class="small"></div><div id="summary" class="summary"></div>
+    <div id="map"></div><div id="routeInfo" class="routebox small">Route noch nicht berechnet.</div>
+    <div class="toolbar"><button class="ghost" onclick="geocodeMissingStops()">📍 Fehlende Orte automatisch finden</button><button class="primary" onclick="calculateRoute()">🚐 Route berechnen</button></div>
+  </div>
+</section>
+
+<section class="card span5">
+  <h2>Etappe / Zwischenziel hinzufügen</h2>
+  <div class="row"><input id="stopDate" type="date"><select id="stopType"><option>Etappe</option><option>Campingplatz</option><option>Stellplatz</option><option>Hotel</option><option>Sehenswürdigkeit</option><option>Fähre</option><option>Pause</option></select></div>
+  <div class="row"><input id="stopPlace" placeholder="Ort, z. B. Riga"><button onclick="searchPlace()">🔎 Ort finden</button></div>
+  <div id="searchResults"></div>
+  <div class="row"><input id="stopLat" type="number" step="any" placeholder="Breitengrad"><input id="stopLon" type="number" step="any" placeholder="Längengrad"></div>
+  <textarea id="stopNote" rows="2" placeholder="Notiz, Adresse, Buchung, Öffnungszeiten …"></textarea>
+  <div class="row3"><input id="stopNight" type="number" step=".01" placeholder="Übernachtung €"><input id="stopToll" type="number" step=".01" placeholder="Maut/Fähre €"><input id="stopOther" type="number" step=".01" placeholder="Sonstiges €"></div>
+  <button class="primary" onclick="addStop()">Etappe speichern</button>
+  <div class="small">Tipp: Suche auch direkt nach „Camping Tallinn“, „Wohnmobilstellplatz Riga“ oder einer Sehenswürdigkeit.</div>
+</section>
+
+<section class="card span7">
+  <h2>🗓 Reise-Timeline</h2>
+  <div id="routeTotals" class="routeTotals"></div>
+  <div id="timeline"><div class="small">Noch keine Reise gewählt.</div></div>
+  <details style="margin-top:12px"><summary><b>Etappen bearbeiten und sortieren</b></summary><div id="stops"></div></details>
+</section>
+
+<section class="card span5">
+  <h2>🚐 Fahrzeugprofil</h2>
+  <input id="vehicleName" value="Pössl Summit Prime 640" placeholder="Fahrzeug">
+  <div class="row3"><input id="vehicleLength" type="number" step=".01" value="6.40" placeholder="Länge m"><input id="vehicleHeight" type="number" step=".01" value="2.70" placeholder="Höhe m"><input id="vehicleWeight" type="number" step=".1" value="3.5" placeholder="Gewicht t"></div>
+  <div class="row"><input id="vehicleConsumption" type="number" step=".1" value="9.5" placeholder="Verbrauch l/100 km"><input id="vehicleTank" type="number" step="1" value="90" placeholder="Tank l"></div>
+  <button onclick="saveVehicle()">Fahrzeugprofil speichern</button>
+  <div id="vehicleStatus" class="small"></div>
+</section>
+
+<section class="card span7">
+  <h2>✨ Komplette Reise automatisch planen</h2>
+  <div class="row"><input id="autoDays" type="number" min="1" value="14" placeholder="Reisetage"><input id="autoMaxKm" type="number" min="50" value="250" placeholder="Max. km/Fahrtag"></div>
+  <textarea id="autoWishes" rows="3" placeholder="Wünsche: Natur, Altstädte, Ruhetage, wenig Autobahn, schöne Stellplätze …"></textarea>
+  <button class="primary" onclick="autoPlan()">Reisevorschlag mit KI erstellen</button>
+  <button class="ghost" onclick="importAIPlan()">KI-Vorschlag als Etappen übernehmen</button>
+  <div id="autoOut"></div>
+</section>
+
+<section class="card span5">
+  <h2>Reisekosten</h2>
+  <div class="row"><input id="consumption" type="number" step=".1" value="9.5" placeholder="Verbrauch l/100 km"><input id="fuel" type="number" step=".01" value="1.75" placeholder="Diesel €/l"></div>
+  <button onclick="calculateCosts()">Kosten aktualisieren</button>
+  <div id="costOut" class="routebox">Noch keine Berechnung.</div>
+</section>
+
+<section class="card span7">
+  <h2>KI-Reiseplan</h2>
+  <textarea id="aiPrompt" rows="5" placeholder="z. B. Optimiere meine Route für 21 Tage. Maximal 250 km pro Fahrtag, gute Stellplätze, Sehenswürdigkeiten und zwei Ruhetage."></textarea>
+  <div class="toolbar"><button class="ghost" onclick="prefillAI()">Aus Reise erzeugen</button><button class="primary" onclick="askAI()">KI planen lassen</button></div>
+  <div id="aiOut"></div>
+</section>
+
+
+<section class="card span12">
+ <h2>🔎 Umgebung entdecken</h2>
+ <div class="row3"><select id="nearStop"></select><select id="nearType"><option value="camp_site">Campingplätze</option><option value="caravan_site">Wohnmobil-Stellplätze</option><option value="attraction">Sehenswürdigkeiten</option><option value="museum">Museen</option><option value="viewpoint">Aussichtspunkte</option></select><input id="nearRadius" type="number" value="10000" placeholder="Radius Meter"></div>
+ <button class="primary" onclick="searchNearby()">In der Umgebung suchen</button><div id="nearResults"></div>
+</section>
+
+<section class="card span4"><h2>🎒 Packliste</h2><div class="row"><input id="packText" placeholder="z. B. Stromadapter"><button onclick="addPack()">Hinzufügen</button></div><div id="packList"></div></section>
+<section class="card span4"><h2>📄 Reisedokumente</h2><div class="row"><input id="docText" placeholder="z. B. Reisepass"><input id="docExpiry" type="date"></div><button onclick="addDoc()">Dokument speichern</button><div id="docList"></div></section>
+<section class="card span4"><h2>💰 Reisebudget</h2><input id="budget" type="number" step=".01" placeholder="Gesamtbudget €"><button onclick="saveBudget()">Budget speichern</button><div id="budgetOut"></div></section>
+
+<section class="card span5"><h2>⛽ Tank & Reichweite</h2><div id="rangeOut" class="routebox">Fahrzeugprofil und Route verwenden.</div><button onclick="calcRange()">Reichweite berechnen</button></section>
+<section class="card span7"><h2>🌦 Wetter an einer Etappe</h2><div class="row"><select id="weatherStop"></select><button onclick="loadWeather()">7-Tage-Wetter laden</button></div><div id="weatherOut"></div></section>
+
+<section class="card span4"><h2>⭐ Favoriten</h2><div id="favorites"></div></section>
+<section class="card span4"><h2>📝 Reisejournal</h2><textarea id="journalText" rows="4" placeholder="Notizen, Erlebnisse, Empfehlungen …"></textarea><button onclick="saveJournal()">Journal speichern</button><div id="journalStatus" class="small"></div></section>
+<section class="card span4"><h2>💾 Sicherung</h2><button onclick="backupAll()">Komplettes Backup exportieren</button><input id="restoreFile" type="file" accept=".json"><button onclick="restoreAll()">Backup wiederherstellen</button><div class="small">Reisen, Fahrzeug, Packliste, Dokumente, Favoriten und Einstellungen.</div></section>
+
+<section class="card span6"><h2>📍 GPX-Export</h2><div class="small">Exportiert alle Etappen mit vorhandenen Koordinaten für Navigations- und Kartenprogramme.</div><button onclick="exportGPX()">Aktuelle Reise als GPX exportieren</button></section>
+<section class="card span6"><h2>👥 Reise teilen</h2><div class="small">Erstellt eine kompakte Zusammenfassung für WhatsApp, E-Mail oder andere Apps.</div><button onclick="shareTrip()">Reise teilen / Text kopieren</button><div id="shareOut"></div></section>
+
+
+<section class="card span12">
+ <h2>🧭 Reise-Cockpit 4.2</h2>
+ <div id="cockpit" class="kpiGrid"></div>
+ <div id="travelAlerts"></div>
+</section>
+
+<section class="card span4"><h2>1 · 👤 Reisende</h2><div class="row"><input id="travName" placeholder="Name"><button onclick="addTraveller()">Hinzufügen</button></div><div id="travellers"></div></section>
+<section class="card span4"><h2>2 · 🐕 Haustiere</h2><div class="row"><input id="petName" placeholder="Name"><input id="petType" placeholder="Tier"></div><button onclick="addPet()">Tier hinzufügen</button><div id="pets"></div></section>
+<section class="card span4"><h2>3 · ☎ Notfallkontakte</h2><input id="emName" placeholder="Name"><input id="emPhone" placeholder="Telefon"><button onclick="addEmergency()">Speichern</button><div id="emergencies"></div></section>
+
+<section class="card span4"><h2>4 · 🏕 Buchungen</h2><input id="bookName" placeholder="Campingplatz / Hotel / Fähre"><div class="row"><input id="bookDate" type="date"><input id="bookRef" placeholder="Buchungsnummer"></div><button onclick="addBooking()">Buchung speichern</button><div id="bookings"></div></section>
+<section class="card span4"><h2>5 · 💶 Zahlungen</h2><input id="payName" placeholder="Beschreibung"><div class="row"><input id="payAmount" type="number" step=".01" placeholder="€"><select id="payStatus"><option>offen</option><option>bezahlt</option></select></div><button onclick="addPayment()">Speichern</button><div id="payments"></div></section>
+<section class="card span4"><h2>6 · ⏰ Erinnerungen</h2><input id="remText" placeholder="z. B. Fähre einchecken"><input id="remDate" type="datetime-local"><button onclick="addReminder()">Speichern</button><div id="reminders"></div></section>
+
+<section class="card span4"><h2>7 · 🛂 Länder-Checkliste</h2><textarea id="countryNotes" rows="5" placeholder="Maut, Umweltzone, Vignette, Verkehrsregeln, Einreise …"></textarea><button onclick="saveCountryNotes()">Speichern</button></section>
+<section class="card span4"><h2>8 · 🛣 Maut & Vignetten</h2><input id="tollName" placeholder="Land / Straße"><div class="row"><input id="tollAmount" type="number" step=".01" placeholder="€"><input id="tollUntil" type="date"></div><button onclick="addToll()">Speichern</button><div id="tolls"></div></section>
+<section class="card span4"><h2>9 · ⛴ Fähren</h2><input id="ferryRoute" placeholder="Route"><div class="row"><input id="ferryDate" type="datetime-local"><input id="ferryPrice" type="number" step=".01" placeholder="€"></div><button onclick="addFerry()">Speichern</button><div id="ferries"></div></section>
+
+<section class="card span4"><h2>10 · 🅿 Übernachtungsstatus</h2><div id="nightStats"></div></section>
+<section class="card span4"><h2>11 · 🚿 Versorgung</h2><div class="row"><input id="servicePlace" placeholder="Ort"><select id="serviceType"><option>Frischwasser</option><option>Entsorgung</option><option>Dusche</option><option>Waschmaschine</option><option>Gas</option></select></div><button onclick="addService()">Speichern</button><div id="services"></div></section>
+<section class="card span4"><h2>12 · ⚡ Stromplanung</h2><div class="row"><input id="batteryAh" type="number" value="200" placeholder="Batterie Ah"><input id="dailyAh" type="number" value="60" placeholder="Verbrauch Ah/Tag"></div><button onclick="calcPower()">Berechnen</button><div id="powerOut"></div></section>
+
+<section class="card span4"><h2>13 · 🧺 Vorräte</h2><div class="row"><input id="supplyText" placeholder="Artikel"><button onclick="addSupply()">Hinzufügen</button></div><div id="supplies"></div></section>
+<section class="card span4"><h2>14 · 🛒 Einkaufsliste</h2><div class="row"><input id="shopText" placeholder="Einkauf"><button onclick="addShop()">Hinzufügen</button></div><div id="shopping"></div></section>
+<section class="card span4"><h2>15 · 🍽 Essensplanung</h2><textarea id="mealNotes" rows="5" placeholder="Tag 1 …&#10;Tag 2 …"></textarea><button onclick="saveMeal()">Speichern</button></section>
+
+<section class="card span4"><h2>16 · 📸 Foto-Merkliste</h2><div class="row"><input id="photoText" placeholder="Fotomotiv"><button onclick="addPhoto()">Hinzufügen</button></div><div id="photos"></div></section>
+<section class="card span4"><h2>17 · 🎯 Wunschliste</h2><div class="row"><input id="wishText" placeholder="Das möchte ich erleben"><button onclick="addWish()">Hinzufügen</button></div><div id="wishes"></div></section>
+<section class="card span4"><h2>18 · 💤 Ruhetage</h2><div id="restStats"></div><button onclick="suggestRestDays()">Ruhetage prüfen</button></section>
+
+<section class="card span4"><h2>19 · 📏 Tageskilometer-Check</h2><input id="maxDailyCheck" type="number" value="250" placeholder="Max km"><button onclick="checkDailyKm()">Prüfen</button><div id="dailyKmOut"></div></section>
+<section class="card span4"><h2>20 · ⛽ Tankstopp-Plan</h2><button onclick="tankStopPlan()">Tankstopps abschätzen</button><div id="tankPlanOut"></div></section>
+<section class="card span4"><h2>21 · 📊 Kosten pro Tag</h2><div id="dailyCostOut"></div><button onclick="calcDailyCosts()">Berechnen</button></section>
+
+<section class="card span4"><h2>22 · 📅 Kalenderexport</h2><button onclick="exportICS()">Reise als .ics exportieren</button><div class="small">Etappen mit Datum werden als Kalendereinträge exportiert.</div></section>
+<section class="card span4"><h2>23 · 🖨 Druckansicht</h2><button onclick="window.print()">Reise drucken</button><div class="small">Nutzt die Druck-/PDF-Funktion des Browsers.</div></section>
+<section class="card span4"><h2>24 · 🔍 Reisesuche</h2><input id="globalSearch" placeholder="Ort, Notiz, Campingplatz …" oninput="searchTrips()"><div id="globalResults"></div></section>
+
+<section class="card span6"><h2>25 · 📋 Reise duplizieren</h2><button onclick="duplicateTrip()">Aktuelle Reise als Kopie anlegen</button><div class="small">Ideal als Vorlage für eine ähnliche Reise.</div></section>
+<section class="card span6"><h2>26 · 🤖 KI-Reisecheck</h2><button class="primary" onclick="aiAudit()">Gesamte Reise von KI prüfen lassen</button><div id="auditOut"></div></section>
+
+<section id="editPanel" class="card span12 hidden">
+  <h2>✏️ Etappe bearbeiten</h2>
+  <input id="editId" type="hidden">
+  <div class="row3"><input id="editDate" type="date"><input id="editPlace" placeholder="Ort"><select id="editType"><option>Etappe</option><option>Campingplatz</option><option>Stellplatz</option><option>Hotel</option><option>Sehenswürdigkeit</option><option>Fähre</option><option>Pause</option></select></div>
+  <div class="row"><input id="editLat" type="number" step="any" placeholder="Breitengrad"><input id="editLon" type="number" step="any" placeholder="Längengrad"></div>
+  <textarea id="editNote" rows="2" placeholder="Notiz"></textarea>
+  <div class="row3"><input id="editNight" type="number" step=".01" placeholder="Übernachtung €"><input id="editToll" type="number" step=".01" placeholder="Maut/Fähre €"><input id="editOther" type="number" step=".01" placeholder="Sonstiges €"></div>
+  <div class="toolbar"><button class="primary" onclick="saveEditedStop()">Änderungen speichern</button><button onclick="cancelEdit()">Abbrechen</button></div>
+</section>
+</div></main>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+const KEY="urlaubsplaner_trips_v3", OLDKEY="urlaubsplaner_trips_v2";
+let selectedId=null,map=null,markersLayer=null,routeLayer=null,lastRouteKm=0,lastRouteHours=0;
+
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
+function migrate(){
+ if(localStorage.getItem(KEY))return;
+ const old=localStorage.getItem(OLDKEY); if(old){try{const a=JSON.parse(old);a.forEach(t=>(t.stops||[]).forEach(s=>{s.nightCost=s.nightCost||0;s.tollCost=s.tollCost||0;s.otherCost=s.otherCost||0}));localStorage.setItem(KEY,JSON.stringify(a))}catch{}}
+}
+function load(){try{return JSON.parse(localStorage.getItem(KEY)||"[]")}catch{return []}}
+function save(a){localStorage.setItem(KEY,JSON.stringify(a));render()}
+function getSelected(){return load().find(x=>x.id===selectedId)}
+
+function addTrip(){
+ const t={id:Date.now(),title:$("title").value.trim()||"Unbenannte Reise",start:$("start").value,end:$("end").value,origin:$("origin").value.trim(),destination:$("destination").value.trim(),mode:$("mode").value,stops:[]};
+ const a=load();a.push(t);selectedId=t.id;save(a);
+}
+function selectTrip(id){selectedId=id;lastRouteKm=lastRouteHours=0;render()}
+function removeSelectedTrip(){if(selectedId==null||!confirm("Diese Reise wirklich löschen?"))return;const a=load().filter(x=>x.id!==selectedId);selectedId=a[0]?.id??null;save(a)}
+function addStop(){
+ const a=load(),t=a.find(x=>x.id===selectedId);if(!t){alert("Bitte zuerst eine Reise wählen.");return}
+ if(!$("stopPlace").value.trim()){alert("Bitte einen Ort eingeben.");return}
+ const lat=$("stopLat").value===""?null:+$("stopLat").value,lon=$("stopLon").value===""?null:+$("stopLon").value;
+ t.stops.push({id:Date.now(),date:$("stopDate").value,place:$("stopPlace").value.trim(),type:$("stopType").value,lat,lon,note:$("stopNote").value.trim(),nightCost:+$("stopNight").value||0,tollCost:+$("stopToll").value||0,otherCost:+$("stopOther").value||0});
+ ["stopPlace","stopLat","stopLon","stopNote","stopNight","stopToll","stopOther"].forEach(id=>$(id).value="");$("searchResults").innerHTML="";save(a)
+}
+function delStop(id){const a=load(),t=a.find(x=>x.id===selectedId);if(!t)return;t.stops=t.stops.filter(s=>s.id!==id);save(a)}
+function moveStop(id,dir){const a=load(),t=a.find(x=>x.id===selectedId),i=t?.stops.findIndex(s=>s.id===id),j=i+dir;if(!t||i<0||j<0||j>=t.stops.length)return;[t.stops[i],t.stops[j]]=[t.stops[j],t.stops[i]];save(a)}
+
+async function searchPlace(){
+ const q=$("stopPlace").value.trim();if(!q){alert("Bitte Suchbegriff eingeben.");return}
+ $("searchResults").innerHTML='<div class="small">Suche …</div>';
+ try{
+  const r=await fetch("/api/geocode?q="+encodeURIComponent(q));const j=await r.json();if(!r.ok)throw new Error(j.error||"Suche fehlgeschlagen");
+  $("searchResults").innerHTML=j.results.length?j.results.map((x,i)=>`<div class="searchresult" onclick='choosePlace(${JSON.stringify(x.lat)},${JSON.stringify(x.lon)},${JSON.stringify(x.display_name)})'><b>${esc(x.name||x.display_name.split(",")[0])}</b><div class="small">${esc(x.display_name)}</div></div>`).join(""):'<div class="small">Kein Treffer.</div>';
+ }catch(e){$("searchResults").innerHTML=`<div class="small">Ortssuche nicht möglich: ${esc(e.message)}</div>`}
+}
+function choosePlace(lat,lon,name){$("stopLat").value=lat;$("stopLon").value=lon;if(!$("stopPlace").value.trim())$("stopPlace").value=name;$("searchResults").innerHTML='<div class="small success">✓ Koordinaten übernommen.</div>'}
+
+async function calculateRoute(){
+ const t=getSelected();if(!t)return;
+ const pts=t.stops.filter(s=>Number.isFinite(s.lat)&&Number.isFinite(s.lon));
+ if(pts.length<2){$("routeInfo").textContent="Für die Routenberechnung werden mindestens zwei Etappen mit Koordinaten benötigt.";return}
+ $("routeInfo").textContent="Route wird berechnet …";
+ try{
+  const coords=pts.map(s=>`${s.lon},${s.lat}`).join(";");const r=await fetch("/api/route?coords="+encodeURIComponent(coords));const j=await r.json();if(!r.ok)throw new Error(j.error||"Routing fehlgeschlagen");
+  lastRouteKm=j.distance_km;lastRouteHours=j.duration_hours;
+  const a=load(),trip=a.find(x=>x.id===selectedId);
+  if(trip){trip.routeSummary={distanceKm:j.distance_km,durationHours:j.duration_hours,legs:j.legs||[],updatedAt:new Date().toISOString()};localStorage.setItem(KEY,JSON.stringify(a));}
+  if(routeLayer){map.removeLayer(routeLayer);routeLayer=null}
+  routeLayer=L.geoJSON(j.geometry,{weight:5}).addTo(map);map.fitBounds(routeLayer.getBounds().pad(.12));
+  $("routeInfo").innerHTML=`<b>${j.distance_km.toFixed(0)} km</b> · ca. <b>${formatHours(j.duration_hours)}</b> reine Fahrzeit<br><span class="small">Straßenroute über OSRM; tatsächliche Fahrt kann abweichen.</span>`;
+  calculateCosts();renderTimeline(getSelected());
+ }catch(e){$("routeInfo").textContent="Route konnte nicht berechnet werden: "+e.message}
+}
+function formatHours(h){const m=Math.round(h*60),hh=Math.floor(m/60),mm=m%60;return `${hh} h ${mm} min`}
+
+function calculateCosts(){
+ const t=getSelected();if(!t){$("costOut").textContent="Bitte Reise auswählen.";return}
+ const c=+$("consumption").value||0,f=+$("fuel").value||0;
+ const fixed=t.stops.reduce((n,s)=>n+(+s.nightCost||0)+(+s.tollCost||0)+(+s.otherCost||0),0);
+ const nights=t.stops.reduce((n,s)=>n+(+s.nightCost||0),0),tolls=t.stops.reduce((n,s)=>n+(+s.tollCost||0),0),other=t.stops.reduce((n,s)=>n+(+s.otherCost||0),0);
+ const fuelCost=lastRouteKm*c/100*f,total=fuelCost+fixed;
+ $("costOut").innerHTML=`<div class="costline"><span>Route</span><b>${lastRouteKm.toFixed(0)} km</b></div><div class="costline"><span>Kraftstoff</span><b>${fuelCost.toFixed(2)} €</b></div><div class="costline"><span>Übernachtungen</span><b>${nights.toFixed(2)} €</b></div><div class="costline"><span>Maut/Fähren</span><b>${tolls.toFixed(2)} €</b></div><div class="costline"><span>Sonstiges</span><b>${other.toFixed(2)} €</b></div><div class="costline"><span><b>Gesamt</b></span><b>${total.toFixed(2)} €</b></div>`;
+}
+function prefillAI(){
+ const t=getSelected();if(!t){$("aiPrompt").value="Plane eine abwechslungsreiche Urlaubsreise mit realistischen Tagesetappen, Highlights, Übernachtungen und Kostenhinweisen.";return}
+ const stops=t.stops.map((s,i)=>`${i+1}. ${s.place} (${s.type})`).join(", ");
+ $("aiPrompt").value=`Optimiere meine Reise „${t.title}“ (${t.start||"Datum offen"} bis ${t.end||"Datum offen"}) von ${t.origin||"Start offen"} nach ${t.destination||"Ziel offen"}. Reiseart: ${t.mode}. Bisherige Stopps: ${stops||"noch keine"}. Erstelle sinnvolle Tagesetappen, passende Sehenswürdigkeiten, bei Wohnmobil geeignete Camping- oder Stellplätze, Pausentage sowie Hinweise zu Fahrzeiten, Maut/Fähren und Kosten.`;
+}
+async function askAI(){
+ const p=$("aiPrompt").value.trim();if(!p){alert("Bitte einen Planungswunsch eingeben.");return}
+ $("aiOut").innerHTML='<div class="airesult">KI wird angefragt …</div>';
+ try{const r=await fetch("/api/plan",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({prompt:p,trip:getSelected()})});const j=await r.json();if(!r.ok)throw new Error(j.error||"KI-Fehler");$("aiOut").innerHTML=`<div class="airesult">${esc(j.text)}</div>`}
+ catch(e){$("aiOut").innerHTML=`<div class="airesult">KI-Aufruf nicht möglich: ${esc(e.message)}\n\nDie restliche App funktioniert weiterhin.</div>`}
+}
+
+const VEHICLE_KEY="urlaubsplaner_vehicle_v1";
+function saveVehicle(){
+ const v={name:$("vehicleName").value.trim(),length:+$("vehicleLength").value||0,height:+$("vehicleHeight").value||0,weight:+$("vehicleWeight").value||0,consumption:+$("vehicleConsumption").value||0,tank:+$("vehicleTank").value||0};
+ localStorage.setItem(VEHICLE_KEY,JSON.stringify(v));
+ $("consumption").value=v.consumption||$("consumption").value;
+ $("vehicleStatus").textContent="✓ Fahrzeugprofil gespeichert.";
+}
+function loadVehicle(){
+ try{
+  const v=JSON.parse(localStorage.getItem(VEHICLE_KEY)||"null"); if(!v)return;
+  $("vehicleName").value=v.name||"";$("vehicleLength").value=v.length||"";$("vehicleHeight").value=v.height||"";$("vehicleWeight").value=v.weight||"";$("vehicleConsumption").value=v.consumption||"";$("vehicleTank").value=v.tank||"";
+  if(v.consumption)$("consumption").value=v.consumption;
+ }catch{}
+}
+async function autoPlan(){
+ const t=getSelected();if(!t){alert("Bitte zuerst eine Reise anlegen oder auswählen.");return}
+ let v={};try{v=JSON.parse(localStorage.getItem(VEHICLE_KEY)||"{}")}catch{}
+ const days=+$("autoDays").value||14,maxKm=+$("autoMaxKm").value||250,wishes=$("autoWishes").value.trim();
+ const prompt=`Erstelle für diese Reise einen vollständigen Tagesplan für ${days} Tage. Maximal ungefähr ${maxKm} km pro Fahrtag. Wünsche: ${wishes||"abwechslungsreich, entspannt, gute Sehenswürdigkeiten und Übernachtungsmöglichkeiten"}. Fahrzeugprofil: ${JSON.stringify(v)}. Reise: ${JSON.stringify(t)}. Berücksichtige bei einem Wohnmobil besonders Fahrzeughöhe, Länge, Gewicht, Tankreichweite, realistische Fahrzeiten, Ruhetage, Camping-/Stellplätze, Fähren/Maut und Sehenswürdigkeiten. Gib zuerst einen gut lesbaren Tagesplan aus. Füge danach exakt einen JSON-Block zwischen den Markierungen ===ETAPPEN_JSON_START=== und ===ETAPPEN_JSON_END=== ein. JSON ist ein Array mit Objekten: {"date":"YYYY-MM-DD oder leer","place":"Ortsname","type":"Etappe|Campingplatz|Stellplatz|Hotel|Sehenswürdigkeit|Fähre|Pause","note":"kurze Notiz","nightCost":0,"tollCost":0,"otherCost":0}. Keine Koordinaten erfinden.`;
+ $("autoOut").innerHTML='<div class="airesult">Reise wird geplant …</div>';
+ try{
+  const r=await fetch("/api/plan",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({prompt,trip:t,vehicle:v})});
+  const j=await r.json();if(!r.ok)throw new Error(j.error||"KI-Fehler");
+  window.lastAIPlanText=j.text;
+  $("autoOut").innerHTML=`<div class="airesult">${esc(j.text)}</div>`;
+ }catch(e){$("autoOut").innerHTML=`<div class="airesult">Automatische Planung nicht möglich: ${esc(e.message)}</div>`}
+}
+
+async function importAIPlan(){
+ const text=window.lastAIPlanText||"";
+ if(!text){alert("Bitte zuerst einen KI-Reisevorschlag erstellen.");return}
+ const m=text.match(/===ETAPPEN_JSON_START===\s*([\s\S]*?)\s*===ETAPPEN_JSON_END===/);
+ if(!m){alert("Im KI-Vorschlag wurde kein importierbarer Etappenblock gefunden.");return}
+ let rows;try{rows=JSON.parse(m[1].replace(/```json|```/g,"").trim())}catch(e){alert("Der Etappenblock konnte nicht gelesen werden.");return}
+ if(!Array.isArray(rows)||!rows.length){alert("Keine Etappen gefunden.");return}
+ const a=load(),t=a.find(x=>x.id===selectedId);if(!t)return;
+ if(t.stops.length && !confirm("Die KI-Etappen werden an die vorhandenen Etappen angehängt. Fortfahren?"))return;
+ for(const x of rows){
+   const stop={id:Date.now()+Math.floor(Math.random()*100000),date:x.date||"",place:String(x.place||"").trim(),type:x.type||"Etappe",lat:null,lon:null,note:x.note||"",nightCost:+x.nightCost||0,tollCost:+x.tollCost||0,otherCost:+x.otherCost||0};
+   if(stop.place)t.stops.push(stop);
+ }
+ save(a);
+ alert(`${rows.length} KI-Etappen wurden übernommen. Nutze „Ort finden“, wenn du Koordinaten ergänzen möchtest.`);
+}
+function editStop(id){
+ const t=getSelected(),s=t?.stops.find(x=>x.id===id);if(!s)return;
+ $("editId").value=s.id;$("editDate").value=s.date||"";$("editPlace").value=s.place||"";$("editType").value=s.type||"Etappe";$("editLat").value=s.lat??"";$("editLon").value=s.lon??"";$("editNote").value=s.note||"";$("editNight").value=s.nightCost||"";$("editToll").value=s.tollCost||"";$("editOther").value=s.otherCost||"";
+ $("editPanel").classList.remove("hidden");$("editPanel").scrollIntoView({behavior:"smooth",block:"center"});
+}
+function cancelEdit(){$("editPanel").classList.add("hidden")}
+function saveEditedStop(){
+ const a=load(),t=a.find(x=>x.id===selectedId),id=+$("editId").value,s=t?.stops.find(x=>x.id===id);if(!s)return;
+ s.date=$("editDate").value;s.place=$("editPlace").value.trim();s.type=$("editType").value;s.lat=$("editLat").value===""?null:+$("editLat").value;s.lon=$("editLon").value===""?null:+$("editLon").value;s.note=$("editNote").value.trim();s.nightCost=+$("editNight").value||0;s.tollCost=+$("editToll").value||0;s.otherCost=+$("editOther").value||0;
+ $("editPanel").classList.add("hidden");save(a);
+}
+async function geocodeMissingStops(){
+ const a=load(),t=a.find(x=>x.id===selectedId);if(!t)return;
+ const missing=t.stops.filter(s=>s.place && !(Number.isFinite(s.lat)&&Number.isFinite(s.lon)));
+ if(!missing.length){alert("Alle Etappen haben bereits Koordinaten.");return}
+ let done=0;
+ for(const st of missing){
+  try{
+   const r=await fetch("/api/geocode?q="+encodeURIComponent(st.place));const j=await r.json();
+   if(r.ok&&j.results?.length){st.lat=j.results[0].lat;st.lon=j.results[0].lon;done++}
+   await new Promise(r=>setTimeout(r,1100));
+  }catch{}
+ }
+ save(a);alert(`${done} von ${missing.length} fehlenden Orten wurden automatisch gefunden.`);
+}
+function exportTrip(){const t=getSelected();if(!t)return;const blob=new Blob([JSON.stringify(t,null,2)],{type:"application/json"}),u=URL.createObjectURL(blob),a=document.createElement("a");a.href=u;a.download=(t.title||"reise").replace(/[^a-z0-9_-]+/gi,"_")+".json";a.click();URL.revokeObjectURL(u)}
+function initMap(){map=L.map("map").setView([51.1,10.4],5);L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"© OpenStreetMap"}).addTo(map);markersLayer=L.layerGroup().addTo(map)}
+function updateMap(t){
+ if(!map)return;markersLayer.clearLayers();if(routeLayer){map.removeLayer(routeLayer);routeLayer=null}
+ const pts=(t?.stops||[]).filter(s=>Number.isFinite(s.lat)&&Number.isFinite(s.lon));
+ pts.forEach((s,i)=>L.marker([s.lat,s.lon]).addTo(markersLayer).bindPopup(`<b>${i+1}. ${esc(s.place)}</b><br>${esc(s.type)}`));
+ if(pts.length){const ll=pts.map(s=>[s.lat,s.lon]);map.fitBounds(L.latLngBounds(ll).pad(.18))}else map.setView([51.1,10.4],5)
+}
+
+function renderTimeline(t){
+ const box=$("timeline"),tot=$("routeTotals");if(!box||!tot)return;
+ if(!t){box.innerHTML='<div class="small">Noch keine Reise gewählt.</div>';tot.innerHTML="";return}
+ const rs=t.routeSummary||{},legs=rs.legs||[];
+ tot.innerHTML=`<div class="metric"><b>${t.stops.length}</b><span class="small">Etappen</span></div><div class="metric"><b>${rs.distanceKm?Math.round(rs.distanceKm)+" km":"–"}</b><span class="small">Gesamtstrecke</span></div><div class="metric"><b>${rs.durationHours?formatHours(rs.durationHours):"–"}</b><span class="small">Fahrzeit</span></div>`;
+ if(!t.stops.length){box.innerHTML='<div class="small">Noch keine Etappen vorhanden.</div>';return}
+ box.className="timeline";
+ box.innerHTML=t.stops.map((st,i)=>{
+   const leg=i>0?legs[i-1]:null;
+   const legHtml=leg?`<div class="leg">🚐 von vorheriger Etappe: <b>${Math.round(leg.distance_km)} km</b> · ${formatHours(leg.duration_hours)}</div>`:(i===0?'<div class="leg">🏁 Start der geplanten Etappen</div>':'<div class="leg">Route für diesen Abschnitt noch nicht berechnet.</div>');
+   const costs=(+st.nightCost||0)+(+st.tollCost||0)+(+st.otherCost||0);
+   return `<div class="daycard"><div class="dayhead"><div><div class="daytitle">Tag ${i+1} · ${esc(st.place)}</div><div class="small">${esc(st.date||"Datum offen")} · ${esc(st.type||"Etappe")}</div></div><div class="toolbar"><button onclick="toggleFavorite(${st.id})">⭐</button><button onclick="editStop(${st.id})">✎</button></div></div>${st.note?`<div style="margin-top:6px">${esc(st.note)}</div>`:""}${legHtml}<div>${Number.isFinite(st.lat)&&Number.isFinite(st.lon)?'<span class="tag">📍 Karte</span>':'<span class="tag">⚠️ Ort suchen</span>'}${costs?`<span class="tag">💶 ${costs.toFixed(2)} €</span>`:""}</div></div>`
+ }).join("");
+}
+
+const PACK_KEY="urlaubsplaner_pack_v1",DOC_KEY="urlaubsplaner_docs_v1",FAV_KEY="urlaubsplaner_favs_v1",BUDGET_KEY="urlaubsplaner_budget_v1",JOURNAL_KEY="urlaubsplaner_journal_v1";
+const arrKey=k=>{try{return JSON.parse(localStorage.getItem(k)||"[]")}catch{return[]}};
+function setArr(k,a){localStorage.setItem(k,JSON.stringify(a));renderExtras()}
+function addPack(){const x=$("packText").value.trim();if(!x)return;const a=arrKey(PACK_KEY);a.push({id:Date.now(),text:x,done:false});$("packText").value="";setArr(PACK_KEY,a)}
+function togglePack(id){const a=arrKey(PACK_KEY),x=a.find(x=>x.id===id);if(x)x.done=!x.done;setArr(PACK_KEY,a)}
+function delPack(id){setArr(PACK_KEY,arrKey(PACK_KEY).filter(x=>x.id!==id))}
+function addDoc(){const x=$("docText").value.trim();if(!x)return;const a=arrKey(DOC_KEY);a.push({id:Date.now(),text:x,expiry:$("docExpiry").value});$("docText").value="";$("docExpiry").value="";setArr(DOC_KEY,a)}
+function delDoc(id){setArr(DOC_KEY,arrKey(DOC_KEY).filter(x=>x.id!==id))}
+function saveBudget(){localStorage.setItem(BUDGET_KEY,$("budget").value||"0");renderExtras()}
+function toggleFavorite(id){const a=arrKey(FAV_KEY),i=a.indexOf(id);i>=0?a.splice(i,1):a.push(id);setArr(FAV_KEY,a)}
+function saveJournal(){const t=getSelected();if(!t)return;const all=JSON.parse(localStorage.getItem(JOURNAL_KEY)||"{}");all[t.id]=$("journalText").value;localStorage.setItem(JOURNAL_KEY,JSON.stringify(all));$("journalStatus").textContent="✓ Journal gespeichert."}
+function calcRange(){
+ let v={};try{v=JSON.parse(localStorage.getItem(VEHICLE_KEY)||"{}")}catch{}
+ const range=v.consumption?((v.tank||0)/v.consumption*100):0,reserve=range*.85;
+ $("rangeOut").innerHTML=`Theoretische Reichweite: <b>${Math.round(range)} km</b><br>Mit 15 % Reserve: <b>${Math.round(reserve)} km</b>${lastRouteKm?`<br>Für ${Math.round(lastRouteKm)} km Route etwa <b>${(lastRouteKm/(range||1)).toFixed(1)}</b> Tankfüllungen.`:""}`;
+}
+async function searchNearby(){
+ const t=getSelected(),st=t?.stops.find(x=>x.id===+$("nearStop").value);if(!st||!Number.isFinite(st.lat)){alert("Etappe benötigt Koordinaten.");return}
+ $("nearResults").innerHTML='<div class="small">Suche …</div>';
+ try{const r=await fetch(`/api/nearby?lat=${st.lat}&lon=${st.lon}&type=${encodeURIComponent($("nearType").value)}&radius=${+$("nearRadius").value||10000}`);const j=await r.json();if(!r.ok)throw new Error(j.error);
+ $("nearResults").innerHTML=j.results.length?j.results.map(x=>`<div class="poi"><b>${esc(x.name)}</b><div class="small">${Math.round(x.distance_m)} m entfernt</div><button onclick='addNearby(${JSON.stringify(JSON.stringify(x))})'>Als Etappe übernehmen</button></div>`).join(""):'<div class="small">Keine Treffer.</div>'}catch(e){$("nearResults").textContent="Suche fehlgeschlagen: "+e.message}
+}
+function addNearby(raw){const x=JSON.parse(raw),a=load(),t=a.find(x=>x.id===selectedId);if(!t)return;t.stops.push({id:Date.now(),date:"",place:x.name,type:x.stopType||"Sehenswürdigkeit",lat:x.lat,lon:x.lon,note:"Aus Umgebungssuche übernommen",nightCost:0,tollCost:0,otherCost:0});save(a)}
+async function loadWeather(){
+ const t=getSelected(),st=t?.stops.find(x=>x.id===+$("weatherStop").value);if(!st||!Number.isFinite(st.lat)){alert("Etappe benötigt Koordinaten.");return}
+ $("weatherOut").innerHTML='<div class="small">Wetter wird geladen …</div>';
+ try{const r=await fetch(`/api/weather?lat=${st.lat}&lon=${st.lon}`),j=await r.json();if(!r.ok)throw new Error(j.error);
+ $("weatherOut").innerHTML='<div class="forecast">'+j.days.map(d=>`<div><b>${esc(d.date)}</b><br>🌡 ${d.min}–${d.max} °C<br>🌧 ${d.rain} mm</div>`).join("")+'</div>'}catch(e){$("weatherOut").textContent="Wetter nicht verfügbar: "+e.message}
+}
+function exportGPX(){
+ const t=getSelected();if(!t)return;const pts=t.stops.filter(s=>Number.isFinite(s.lat)&&Number.isFinite(s.lon));if(!pts.length){alert("Keine Koordinaten vorhanden.");return}
+ const xml=`<?xml version="1.0" encoding="UTF-8"?><gpx version="1.1" creator="Urlaubsplaner 5.1" xmlns="http://www.topografix.com/GPX/1/1"><metadata><name>${esc(t.title)}</name></metadata>${pts.map(s=>`<wpt lat="${s.lat}" lon="${s.lon}"><name>${esc(s.place)}</name><desc>${esc(s.note||s.type)}</desc></wpt>`).join("")}<rte><name>${esc(t.title)}</name>${pts.map(s=>`<rtept lat="${s.lat}" lon="${s.lon}"><name>${esc(s.place)}</name></rtept>`).join("")}</rte></gpx>`;
+ downloadText((t.title||"reise").replace(/[^a-z0-9_-]+/gi,"_")+".gpx",xml,"application/gpx+xml");
+}
+function downloadText(name,text,type){const b=new Blob([text],{type}),u=URL.createObjectURL(b),a=document.createElement("a");a.href=u;a.download=name;a.click();URL.revokeObjectURL(u)}
+function backupAll(){const o={version:"1.6",trips:load(),vehicle:localStorage.getItem(VEHICLE_KEY),pack:arrKey(PACK_KEY),docs:arrKey(DOC_KEY),favs:arrKey(FAV_KEY),budget:localStorage.getItem(BUDGET_KEY),journal:localStorage.getItem(JOURNAL_KEY)};downloadText("urlaubsplaner_backup.json",JSON.stringify(o,null,2),"application/json")}
+async function restoreAll(){const f=$("restoreFile").files[0];if(!f)return alert("Bitte Backup-Datei wählen.");try{const o=JSON.parse(await f.text());if(!Array.isArray(o.trips))throw Error("Ungültiges Backup");localStorage.setItem(KEY,JSON.stringify(o.trips));if(o.vehicle)localStorage.setItem(VEHICLE_KEY,o.vehicle);setArr(PACK_KEY,o.pack||[]);localStorage.setItem(DOC_KEY,JSON.stringify(o.docs||[]));localStorage.setItem(FAV_KEY,JSON.stringify(o.favs||[]));localStorage.setItem(BUDGET_KEY,o.budget||"0");if(o.journal)localStorage.setItem(JOURNAL_KEY,o.journal);selectedId=o.trips[0]?.id??null;loadVehicle();render();alert("Backup wiederhergestellt.")}catch(e){alert("Backup konnte nicht gelesen werden: "+e.message)}}
+async function shareTrip(){const t=getSelected();if(!t)return;const txt=`${t.title}\n${t.start||""} – ${t.end||""}\n${t.origin||""} → ${t.destination||""}\n\n${t.stops.map((s,i)=>`Tag ${i+1}: ${s.place} (${s.type})`).join("\n")}${t.routeSummary?`\n\nGesamt: ${Math.round(t.routeSummary.distanceKm||0)} km · ${formatHours(t.routeSummary.durationHours||0)}`:""}`;try{if(navigator.share){await navigator.share({title:t.title,text:txt})}else{await navigator.clipboard.writeText(txt);$("shareOut").innerHTML='<div class="sharebox">Text wurde kopiert.</div>'}}catch{$("shareOut").innerHTML=`<div class="sharebox">${esc(txt)}</div>`}}
+function renderExtras(){
+ const pack=arrKey(PACK_KEY);$("packList").innerHTML=pack.map(x=>`<div class="checkitem"><input type="checkbox" ${x.done?"checked":""} onchange="togglePack(${x.id})"><span style="${x.done?"text-decoration:line-through":""}">${esc(x.text)}</span><button style="width:auto;margin-left:auto" onclick="delPack(${x.id})">×</button></div>`).join("")||'<div class="small">Noch leer.</div>';
+ const docs=arrKey(DOC_KEY);$("docList").innerHTML=docs.map(x=>`<div class="docitem"><span>${esc(x.text)}<br><span class="small">${x.expiry?`gültig bis ${esc(x.expiry)}`:"kein Ablaufdatum"}</span></span><button style="width:auto" onclick="delDoc(${x.id})">×</button></div>`).join("")||'<div class="small">Noch keine Dokumente.</div>';
+ const b=+localStorage.getItem(BUDGET_KEY)||0;if($("budget"))$("budget").value=b||"";
+ const t=getSelected(),fixed=t?.stops.reduce((n,s)=>n+(+s.nightCost||0)+(+s.tollCost||0)+(+s.otherCost||0),0)||0;let v={};try{v=JSON.parse(localStorage.getItem(VEHICLE_KEY)||"{}")}catch{}const fuelCost=(t?.routeSummary?.distanceKm||0)*(v.consumption||+$("consumption").value||0)/100*(+$("fuel").value||0),spent=fixed+fuelCost,pct=b?Math.min(100,spent/b*100):0;
+ $("budgetOut").innerHTML=b?`<div class="costline"><span>Budget</span><b>${b.toFixed(2)} €</b></div><div class="costline"><span>geplant</span><b>${spent.toFixed(2)} €</b></div><div class="costline"><span>Rest</span><b>${(b-spent).toFixed(2)} €</b></div><div class="budgetbar"><div style="width:${pct}%"></div></div>`:'<div class="small">Noch kein Budget festgelegt.</div>';
+ const favs=arrKey(FAV_KEY),favStops=(t?.stops||[]).filter(x=>favs.includes(x.id));$("favorites").innerHTML=favStops.map(x=>`<div class="poi"><b>${esc(x.place)}</b><div class="small">${esc(x.type)}</div></div>`).join("")||'<div class="small">Noch keine Favoriten.</div>';
+ const opts=(t?.stops||[]).map(x=>`<option value="${x.id}">${esc(x.place)}</option>`).join("");$("nearStop").innerHTML=opts;$("weatherStop").innerHTML=opts;
+ let journals={};try{journals=JSON.parse(localStorage.getItem(JOURNAL_KEY)||"{}")}catch{};$("journalText").value=t?journals[t.id]||"":"";
+}
+
+const EXT_KEY="urlaubsplaner_ext_v42";
+function ext(){try{return JSON.parse(localStorage.getItem(EXT_KEY)||"{}")}catch{return{}}}
+function saveExt(o){localStorage.setItem(EXT_KEY,JSON.stringify(o));render42()}
+function bucket(name){const o=ext();return o[name]||[]}
+function addBucket(name,obj){const o=ext();o[name]=o[name]||[];o[name].push({id:Date.now()+Math.floor(Math.random()*9999),...obj});saveExt(o)}
+function delBucket(name,id){const o=ext();o[name]=(o[name]||[]).filter(x=>x.id!==id);saveExt(o)}
+function simpleList(name,el,fmt){const a=bucket(name);$(el).innerHTML=a.map(x=>`<div class="docitem"><span>${fmt(x)}</span><button style="width:auto" onclick="delBucket('${name}',${x.id})">×</button></div>`).join("")||'<div class="small">Noch leer.</div>'}
+function addTraveller(){const x=$("travName").value.trim();if(x)addBucket("travellers",{name:x});$("travName").value=""}
+function addPet(){const n=$("petName").value.trim();if(n)addBucket("pets",{name:n,type:$("petType").value.trim()});$("petName").value="";$("petType").value=""}
+function addEmergency(){const n=$("emName").value.trim();if(n)addBucket("emergencies",{name:n,phone:$("emPhone").value.trim()});$("emName").value="";$("emPhone").value=""}
+function addBooking(){const n=$("bookName").value.trim();if(n)addBucket("bookings",{name:n,date:$("bookDate").value,ref:$("bookRef").value.trim()})}
+function addPayment(){const n=$("payName").value.trim();if(n)addBucket("payments",{name:n,amount:+$("payAmount").value||0,status:$("payStatus").value})}
+function addReminder(){const x=$("remText").value.trim();if(x)addBucket("reminders",{text:x,date:$("remDate").value})}
+function saveCountryNotes(){const o=ext();o.countryNotes=$("countryNotes").value;saveExt(o)}
+function addToll(){const n=$("tollName").value.trim();if(n)addBucket("tolls",{name:n,amount:+$("tollAmount").value||0,until:$("tollUntil").value})}
+function addFerry(){const n=$("ferryRoute").value.trim();if(n)addBucket("ferries",{route:n,date:$("ferryDate").value,price:+$("ferryPrice").value||0})}
+function addService(){const p=$("servicePlace").value.trim();if(p)addBucket("services",{place:p,type:$("serviceType").value})}
+function addSupply(){const x=$("supplyText").value.trim();if(x)addBucket("supplies",{text:x});$("supplyText").value=""}
+function addShop(){const x=$("shopText").value.trim();if(x)addBucket("shopping",{text:x});$("shopText").value=""}
+function saveMeal(){const o=ext();o.meal=$("mealNotes").value;saveExt(o)}
+function addPhoto(){const x=$("photoText").value.trim();if(x)addBucket("photos",{text:x});$("photoText").value=""}
+function addWish(){const x=$("wishText").value.trim();if(x)addBucket("wishes",{text:x});$("wishText").value=""}
+function calcPower(){const a=+$("batteryAh").value||0,d=+$("dailyAh").value||0;$("powerOut").innerHTML=d?`Ohne Nachladung rechnerisch <b>${(a/d).toFixed(1)} Tage</b>. Für die Praxis Sicherheitsreserve einplanen.`:"Verbrauch eintragen."}
+function suggestRestDays(){const t=getSelected(),n=t?.stops.length||0,r=Math.max(0,Math.floor(n/5));$("restStats").innerHTML=`Bei ${n} Etappen sind etwa <b>${r}</b> bewusste Ruhetage als Ausgangspunkt sinnvoll.`}
+function checkDailyKm(){const t=getSelected(),max=+$("maxDailyCheck").value||250,legs=t?.routeSummary?.legs||[];const bad=legs.map((x,i)=>({i,km:x.distance_km})).filter(x=>x.km>max);$("dailyKmOut").innerHTML=bad.length?bad.map(x=>`<div class="alert">Abschnitt ${x.i+1} → ${x.i+2}: <b>${Math.round(x.km)} km</b></div>`).join(""):'<div class="alert good">Alle berechneten Abschnitte liegen im Limit.</div>'}
+function tankStopPlan(){let v={};try{v=JSON.parse(localStorage.getItem(VEHICLE_KEY)||"{}")}catch{}const t=getSelected(),km=t?.routeSummary?.distanceKm||0,range=v.consumption?(v.tank/v.consumption*100*.85):0,n=range?Math.max(0,Math.ceil(km/range)-1):0;$("tankPlanOut").innerHTML=`Planstrecke: <b>${Math.round(km)} km</b><br>Sichere Reichweite: <b>${Math.round(range)} km</b><br>Voraussichtlich mindestens <b>${n}</b> Tankstopp(s).`}
+function calcDailyCosts(){const t=getSelected();if(!t)return;const n=Math.max(1,t.stops.length),fixed=t.stops.reduce((z,x)=>z+(+x.nightCost||0)+(+x.tollCost||0)+(+x.otherCost||0),0);$("dailyCostOut").innerHTML=`Erfasste Etappenkosten: <b>${fixed.toFixed(2)} €</b><br>Ø pro Etappe/Tag: <b>${(fixed/n).toFixed(2)} €</b>`}
+function exportICS(){const t=getSelected();if(!t)return;const events=t.stops.filter(x=>x.date).map((x,i)=>`BEGIN:VEVENT\nUID:${t.id}-${x.id}@urlaubsplaner\nDTSTART;VALUE=DATE:${x.date.replaceAll("-","")}\nSUMMARY:${x.place.replaceAll("\n"," ")}\nDESCRIPTION:${(x.note||x.type).replaceAll("\n"," ")}\nEND:VEVENT`).join("\n");const ics=`BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Urlaubsplaner 5.1//DE\n${events}\nEND:VCALENDAR`;downloadText((t.title||"reise")+".ics",ics,"text/calendar")}
+function searchTrips(){const q=$("globalSearch").value.trim().toLowerCase();if(!q){$("globalResults").innerHTML="";return}const hits=[];load().forEach(t=>{if(`${t.title} ${t.origin} ${t.destination}`.toLowerCase().includes(q))hits.push(t.title);(t.stops||[]).forEach(x=>{if(`${x.place} ${x.note} ${x.type}`.toLowerCase().includes(q))hits.push(`${t.title}: ${x.place}`)})});$("globalResults").innerHTML=[...new Set(hits)].slice(0,20).map(x=>`<div class="poi">${esc(x)}</div>`).join("")||'<div class="small">Kein Treffer.</div>'}
+function duplicateTrip(){const t=getSelected();if(!t)return;const a=load(),copy=JSON.parse(JSON.stringify(t));copy.id=Date.now();copy.title=t.title+" – Kopie";copy.stops.forEach((x,i)=>x.id=Date.now()+i+1);a.push(copy);selectedId=copy.id;save(a)}
+async function aiAudit(){const t=getSelected();if(!t)return;let v={};try{v=JSON.parse(localStorage.getItem(VEHICLE_KEY)||"{}")}catch{};$("auditOut").innerHTML='<div class="airesult">Reise wird geprüft …</div>';const prompt=`Prüfe diese komplette Reise kritisch auf Plausibilität, zu lange Tagesetappen, Ruhetage, Fahrzeugtauglichkeit, Tankreichweite, Kostenlücken, Übernachtungsplanung, Fähren/Maut und fehlende Vorbereitungen. Priorisiere konkrete Verbesserungen. Fahrzeug: ${JSON.stringify(v)}. Reise: ${JSON.stringify(t)}. Zusatzplanung: ${JSON.stringify(ext())}`;try{const r=await fetch("/api/plan",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({prompt,trip:t,vehicle:v})}),j=await r.json();if(!r.ok)throw Error(j.error);$("auditOut").innerHTML=`<div class="airesult">${esc(j.text)}</div>`}catch(e){$("auditOut").innerHTML=`<div class="airesult">${esc(e.message)}</div>`}}
+function render42(){
+ const o=ext();if($("countryNotes"))$("countryNotes").value=o.countryNotes||"";if($("mealNotes"))$("mealNotes").value=o.meal||"";
+ simpleList("travellers","travellers",x=>esc(x.name));simpleList("pets","pets",x=>`${esc(x.name)} · ${esc(x.type||"Tier")}`);simpleList("emergencies","emergencies",x=>`${esc(x.name)} · ${esc(x.phone)}`);
+ simpleList("bookings","bookings",x=>`${esc(x.name)}<br><span class="small">${esc(x.date||"")} ${x.ref?"· "+esc(x.ref):""}</span>`);simpleList("payments","payments",x=>`${esc(x.name)} · ${(+x.amount).toFixed(2)} € · ${esc(x.status)}`);simpleList("reminders","reminders",x=>`${esc(x.text)}<br><span class="small">${esc(x.date||"")}</span>`);
+ simpleList("tolls","tolls",x=>`${esc(x.name)} · ${(+x.amount).toFixed(2)} € ${x.until?"· bis "+esc(x.until):""}`);simpleList("ferries","ferries",x=>`${esc(x.route)} · ${(+x.price).toFixed(2)} €<br><span class="small">${esc(x.date||"")}</span>`);simpleList("services","services",x=>`${esc(x.type)} · ${esc(x.place)}`);
+ simpleList("supplies","supplies",x=>esc(x.text));simpleList("shopping","shopping",x=>esc(x.text));simpleList("photos","photos",x=>esc(x.text));simpleList("wishes","wishes",x=>esc(x.text));
+ const t=getSelected(),st=t?.stops||[],nights=st.filter(x=>["Campingplatz","Stellplatz","Hotel"].includes(x.type)).length;$("nightStats").innerHTML=`<b>${nights}</b> von ${st.length} Etappen sind ausdrücklich als Übernachtungsstopp markiert.`;
+ const rs=t?.routeSummary||{};$("cockpit").innerHTML=`<div class="kpi"><b>${st.length}</b>Etappen</div><div class="kpi"><b>${Math.round(rs.distanceKm||0)} km</b>Strecke</div><div class="kpi"><b>${rs.durationHours?formatHours(rs.durationHours):"–"}</b>Fahrzeit</div><div class="kpi"><b>${bucket("bookings").length}</b>Buchungen</div><div class="kpi"><b>${bucket("reminders").length}</b>Erinnerungen</div><div class="kpi"><b>${nights}</b>Übernachtungen</div>`;
+ const alerts=[];if(st.length&&!rs.distanceKm)alerts.push("Route nach Änderungen neu berechnen.");if(st.some(x=>!Number.isFinite(x.lat)))alerts.push("Einige Etappen haben noch keine Koordinaten.");if(st.length&&nights<Math.max(1,Math.floor(st.length/2)))alerts.push("Nur wenige Etappen sind als Übernachtungsstopp markiert.");$("travelAlerts").innerHTML=alerts.map(x=>`<div class="alert">⚠ ${esc(x)}</div>`).join("")||'<div class="alert good">✓ Keine offensichtlichen Planungswarnungen.</div>';
+}
+function render(){
+ const a=load();if(selectedId==null&&a.length)selectedId=a[0].id;
+ $("trips").innerHTML=a.length?a.map(t=>`<div class="trip ${t.id===selectedId?"active":""}" onclick="selectTrip(${t.id})"><b>${esc(t.title)}</b><div class="small">${esc(t.start||"?")} – ${esc(t.end||"?")}<br>${esc(t.origin||"")} → ${esc(t.destination||"")}<br>${esc(t.mode)} · ${(t.stops||[]).length} Etappen</div></div>`).join(""):'<div class="small">Noch keine Reise angelegt.</div>';
+ const t=a.find(x=>x.id===selectedId);$("noTrip").classList.toggle("hidden",!!t);$("detail").classList.toggle("hidden",!t);
+ if(!t){$("stops").innerHTML='<div class="small">Noch keine Reise gewählt.</div>';updateMap(null);renderExtras();render42();return}
+ $("detailTitle").textContent=t.title;$("detailMeta").textContent=`${t.start||"?"} – ${t.end||"?"} · ${t.origin||""} → ${t.destination||""} · ${t.mode}`;
+ const fixed=t.stops.reduce((n,s)=>n+(+s.nightCost||0)+(+s.tollCost||0)+(+s.otherCost||0),0);
+ $("summary").innerHTML=`<div class="metric"><b>${t.stops.length}</b><span class="small">Stopps</span></div><div class="metric"><b>${fixed.toFixed(2)} €</b><span class="small">eingetragene Kosten</span></div>`;
+ $("stops").innerHTML=t.stops.length?t.stops.map((s,i)=>`<div class="stop"><div class="stopnum">${i+1}</div><div><div class="stop-title">${esc(s.place)}</div><div class="small">${esc(s.date||"Datum offen")} · ${esc(s.type)}</div>${s.note?`<div style="margin-top:4px">${esc(s.note)}</div>`:""}<span class="tag">${Number.isFinite(s.lat)&&Number.isFinite(s.lon)?"📍 Ort gefunden":"⚠️ keine Koordinaten"}</span>${s.nightCost?`<span class="tag">🏕 ${(+s.nightCost).toFixed(2)} €</span>`:""}${s.tollCost?`<span class="tag">🛣 ${(+s.tollCost).toFixed(2)} €</span>`:""}${s.otherCost?`<span class="tag">€ ${(+s.otherCost).toFixed(2)}</span>`:""}</div><div class="stopactions"><button onclick="editStop(${s.id})">✎</button><button onclick="moveStop(${s.id},-1)">↑</button><button onclick="moveStop(${s.id},1)">↓</button><button onclick="delStop(${s.id})">×</button></div></div>`).join(""):'<div class="small">Noch keine Etappen vorhanden.</div>';
+ updateMap(t);renderTimeline(t);renderExtras();render42();
+}
+window.addEventListener("load",()=>{migrate();initMap();loadVehicle();render()});
+</script>
+
+<script type="module">
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+let sb=null,user=null;
+window.cloudState={ready:false};
+async function initCloud(){
+ try{
+  const c=await fetch("/api/config").then(r=>r.json());
+  if(!c.supabaseUrl||!c.supabasePublishableKey){document.getElementById("authStatus").textContent="Supabase ist noch nicht konfiguriert. SUPABASE_URL und SUPABASE_PUBLISHABLE_KEY am Server setzen.";return}
+  sb=createClient(c.supabaseUrl,c.supabasePublishableKey,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+  const {data}=await sb.auth.getSession();user=data.session?.user||null;window.cloudState.ready=true;renderCloud();
+  sb.auth.onAuthStateChange((_e,session)=>{user=session?.user||null;renderCloud()});
+ }catch(e){document.getElementById("authStatus").textContent="Cloud-Initialisierung fehlgeschlagen: "+e.message}
+}
+function renderCloud(){
+ document.getElementById("cloudLoggedOut").classList.toggle("hidden",!!user);
+ document.getElementById("cloudLoggedIn").classList.toggle("hidden",!user);
+ if(user)document.getElementById("cloudUser").textContent="Angemeldet als "+(user.email||user.id);
+}
+window.cloudSignUp=async()=>{const email=authEmail.value.trim(),password=authPassword.value;if(!sb)return;const {data,error}=await sb.auth.signUp({email,password});authStatus.textContent=error?error.message:(data.session?"Konto erstellt und angemeldet.":"Konto erstellt. Bitte ggf. Bestätigungs-E-Mail öffnen.")};
+window.cloudSignIn=async()=>{if(!sb)return;const {error}=await sb.auth.signInWithPassword({email:authEmail.value.trim(),password:authPassword.value});authStatus.textContent=error?error.message:"Anmeldung erfolgreich."};
+window.cloudSignOut=async()=>{if(sb)await sb.auth.signOut()};
+function snapshot(){return {trips:JSON.parse(localStorage.getItem("urlaubsplaner_trips_v3")||"[]"),vehicle:localStorage.getItem("urlaubsplaner_vehicle_v1"),pack:JSON.parse(localStorage.getItem("urlaubsplaner_pack_v1")||"[]"),docs:JSON.parse(localStorage.getItem("urlaubsplaner_docs_v1")||"[]"),favs:JSON.parse(localStorage.getItem("urlaubsplaner_favs_v1")||"[]"),budget:localStorage.getItem("urlaubsplaner_budget_v1"),journal:localStorage.getItem("urlaubsplaner_journal_v1"),ext:localStorage.getItem("urlaubsplaner_ext_v42"),updatedAt:new Date().toISOString()}};
+function restore(x){if(!x)return;localStorage.setItem("urlaubsplaner_trips_v3",JSON.stringify(x.trips||[]));if(x.vehicle)localStorage.setItem("urlaubsplaner_vehicle_v1",x.vehicle);localStorage.setItem("urlaubsplaner_pack_v1",JSON.stringify(x.pack||[]));localStorage.setItem("urlaubsplaner_docs_v1",JSON.stringify(x.docs||[]));localStorage.setItem("urlaubsplaner_favs_v1",JSON.stringify(x.favs||[]));if(x.budget!=null)localStorage.setItem("urlaubsplaner_budget_v1",x.budget);if(x.journal)localStorage.setItem("urlaubsplaner_journal_v1",x.journal);if(x.ext)localStorage.setItem("urlaubsplaner_ext_v42",x.ext);location.reload()}
+window.cloudSyncUp=async()=>{if(!sb||!user)return;syncStatus.textContent="Synchronisiere …";const {error}=await sb.from("user_app_state").upsert({user_id:user.id,state:snapshot(),updated_at:new Date().toISOString()},{onConflict:"user_id"});syncStatus.textContent=error?error.message:"✓ Cloud-Sicherung aktuell."};
+window.cloudSyncDown=async()=>{if(!sb||!user)return;syncStatus.textContent="Cloud wird geladen …";const {data,error}=await sb.from("user_app_state").select("state").eq("user_id",user.id).maybeSingle();if(error)return syncStatus.textContent=error.message;if(!data)return syncStatus.textContent="Noch keine Cloud-Daten vorhanden.";if(confirm("Lokale Daten durch den Cloud-Stand ersetzen?"))restore(data.state)};
+window.cloudMigrate=async()=>{if(confirm("Die aktuell lokalen Daten als deinen Cloud-Stand speichern?"))await window.cloudSyncUp()};
+
+window.publishSelectedTrip=async()=>{
+ if(!sb||!user)return alert("Bitte zuerst anmelden.");
+ const t=window.getSelected?window.getSelected():null;if(!t)return alert("Bitte Reise auswählen.");
+ const payload={owner_id:user.id,title:t.title||"Reise",trip_data:t,updated_at:new Date().toISOString()};
+ let {data,error}=await sb.from("shared_trips").upsert(payload,{onConflict:"owner_id,title"}).select("id,title").single();
+ if(error){shareStatus.textContent=error.message;return}
+ shareTripId.value=data.id;shareStatus.textContent=`✓ „${data.title}“ ist als gemeinsame Cloud-Reise veröffentlicht. Reise-ID: ${data.id}`;
+ await window.loadSharedTrips();
+};
+window.inviteMember=async()=>{
+ if(!sb||!user)return alert("Bitte zuerst anmelden.");
+ const tripId=shareTripId.value.trim(),email=shareEmail.value.trim(),role=shareRole.value;
+ if(!tripId||!email)return alert("Reise-ID und E-Mail eingeben.");
+ const {data,error}=await sb.rpc("invite_trip_member",{p_trip_id:tripId,p_email:email,p_role:role});
+ shareStatus.textContent=error?error.message:`✓ Einladung/Berechtigung gespeichert: ${email} – ${role==="editor"?"Bearbeiten":"Nur ansehen"}`;
+};
+window.loadSharedTrips=async()=>{
+ if(!sb||!user)return;
+ const {data,error}=await sb.from("shared_trip_access").select("*").order("updated_at",{ascending:false});
+ if(error){shareStatus.textContent=error.message;return}
+ sharedTrips.innerHTML=(data||[]).map(x=>`<div class="trip"><b>${esc(x.title)}</b><div class="small">${x.is_owner?"Besitzer":x.role==="editor"?"Darf bearbeiten":"Nur ansehen"} · ${esc(x.owner_email||"")}</div><div class="toolbar"><button onclick='openSharedTrip(${JSON.stringify(x.trip_id)})'>Öffnen</button>${x.role==="editor"||x.is_owner?`<button onclick='saveSharedTrip(${JSON.stringify(x.trip_id)})'>Lokale aktuelle Reise hier speichern</button>`:""}</div></div>`).join("")||'<div class="small">Noch keine gemeinsamen Reisen.</div>';
+};
+window.openSharedTrip=async(id)=>{
+ const {data,error}=await sb.from("shared_trip_access").select("*").eq("trip_id",id).single();
+ if(error)return shareStatus.textContent=error.message;
+ const a=load();let trip=JSON.parse(JSON.stringify(data.trip_data));trip.id=Date.now();trip.title=trip.title+" [Cloud]";trip.cloudTripId=id;trip.cloudRole=data.is_owner?"owner":data.role;a.push(trip);selectedId=trip.id;save(a);shareStatus.textContent="✓ Gemeinsame Reise lokal geöffnet.";
+};
+window.saveSharedTrip=async(id)=>{
+ const t=getSelected();if(!t)return;
+ const clean=JSON.parse(JSON.stringify(t));delete clean.cloudRole;delete clean.cloudTripId;
+ const {error}=await sb.from("shared_trips").update({trip_data:clean,title:clean.title.replace(" [Cloud]",""),updated_at:new Date().toISOString()}).eq("id",id);
+ shareStatus.textContent=error?error.message:"✓ Gemeinsame Reise aktualisiert.";if(!error)await loadSharedTrips();
+};
+initCloud();
+</script>
+
+</body></html>
