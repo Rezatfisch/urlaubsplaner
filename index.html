@@ -7,7 +7,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <link rel="apple-touch-icon" href="icon-192.png">
-  <title>Urlaubsplaner 5.6</title>
+  <title>Urlaubsplaner 5.9</title>
   <link rel="manifest" href="manifest.json">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <style>
@@ -68,23 +68,24 @@
     .nav-tile .ico{font-size:1.65rem;display:block;margin-bottom:8px}.nav-tile b{display:block;font-size:.95rem}.nav-tile span{display:block;color:var(--muted);font-size:.76rem;line-height:1.25;margin-top:4px;font-weight:500}
     #areaHeader{grid-column:1/-1;padding:10px 12px;position:sticky;top:76px;z-index:900}.area-bar{display:flex;gap:9px;align-items:center}.area-bar button{width:auto;margin:0}.area-title{font-weight:900;font-size:1.05rem}.area-sub{font-size:.78rem;color:var(--muted)}
     .quickbar{grid-column:1/-1;display:flex;gap:7px;overflow:auto;padding:2px 0 4px}.quickbar button{width:auto;white-space:nowrap;margin:0;padding:8px 11px;background:#fff}
-    /* 5.5 Routen-, Etappen- und POI-Planung */
-    .planner54{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:10px 0}.planner54 .metric{text-align:center}.planner-actions{display:flex;gap:7px;flex-wrap:wrap;margin:8px 0}.planner-actions button{width:auto;margin:0}.dayplan-row{display:grid;grid-template-columns:70px 1fr auto;gap:8px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line)}.dayplan-row:last-child{border-bottom:0}.day-badge{font-weight:850;background:var(--soft);border-radius:10px;padding:7px;text-align:center}.dayplan-row .warn{color:#a65a00;font-weight:800}.dayplan-row .oktxt{color:#187a3a;font-weight:800}.bottom-nav{display:none}.ai-offline{background:#fff6df;border:1px solid #ead39b;border-radius:11px;padding:10px;margin-top:7px}.ai-offline b{display:block;margin-bottom:3px}.compact-hint{padding:8px 10px;border-radius:10px;background:var(--soft);font-size:.82rem;color:var(--muted);margin-top:8px}.poi55{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:start}.poi55 .poi-meta{font-size:.78rem;color:var(--muted);margin-top:3px}.poi55 button{width:auto;margin:0}.poi55 .poi-cat{display:inline-block;background:var(--soft);border-radius:999px;padding:3px 7px;font-size:.72rem;margin-top:5px}
+    /* 5.8 Reisebegleiter */
+    .today-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:10px 0}.today-kpi{background:var(--soft);border-radius:13px;padding:11px}.today-kpi b{display:block;font-size:1.12rem}.today-main{font-size:1.25rem;font-weight:900}.today-card{border:1px solid var(--line);border-radius:13px;padding:11px;margin:8px 0}.today-actions{display:flex;gap:6px;flex-wrap:wrap}.today-actions button{width:auto}.today-empty{padding:14px;background:var(--soft);border-radius:12px}.today-now{background:#eef9f1;border-color:#b8dfc1}.today-warn{background:#fff6df;border-color:#ead39b}
+    .planner54{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:10px 0}.planner54 .metric{text-align:center}.planner-actions{display:flex;gap:7px;flex-wrap:wrap;margin:8px 0}.planner-actions button{width:auto;margin:0}.dayplan-row{display:grid;grid-template-columns:70px 1fr auto;gap:8px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line)}.dayplan-row:last-child{border-bottom:0}.day-badge{font-weight:850;background:var(--soft);border-radius:10px;padding:7px;text-align:center}.dayplan-row .warn{color:#a65a00;font-weight:800}.dayplan-row .oktxt{color:#187a3a;font-weight:800}.bottom-nav{display:none}.ai-offline{background:#fff6df;border:1px solid #ead39b;border-radius:11px;padding:10px;margin-top:7px}.ai-offline b{display:block;margin-bottom:3px}.compact-hint{padding:8px 10px;border-radius:10px;background:var(--soft);font-size:.82rem;color:var(--muted);margin-top:8px}.poi55{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:start}.poi55 .poi-meta{font-size:.78rem;color:var(--muted);margin-top:3px}.poi55 button{width:auto;margin:0}.poi55 .poi-cat{display:inline-block;background:var(--soft);border-radius:999px;padding:3px 7px;font-size:.72rem;margin-top:5px}.poi-actions{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end}.poi-actions button{width:auto}.poi-priority{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:3px 7px;font-size:.72rem;margin:5px 3px 0 0}.poi-saved{background:#fff8dc}.discover-map{height:420px;border-radius:14px;background:#e8edf2;overflow:hidden;margin-top:10px}.discover-filters{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}.discover-filters button{width:auto;margin:0}.wishlist-poi{border:1px solid var(--line);border-radius:12px;padding:10px;margin:7px 0}.insert-row{display:grid;grid-template-columns:1fr auto;gap:6px;margin-top:7px}.insert-row select,.insert-row button{margin:0}
     @media(max-width:900px){body{padding-bottom:70px}.span4,.span5,.span7,.span8,.span12{grid-column:1/-1}.row,.row3,.routeTotals{grid-template-columns:1fr}#map{height:390px}.stop{grid-template-columns:34px 1fr}.stopactions{grid-column:2}.tile-grid{grid-template-columns:repeat(2,1fr)}.hero-kpis{grid-template-columns:repeat(2,1fr)}.nav-tile{min-height:110px;padding:12px}.dash-head{align-items:flex-start;flex-direction:column}.dash-head .small{text-align:left}#areaHeader{top:72px}.planner54{grid-template-columns:repeat(2,1fr)}.dayplan-row{grid-template-columns:62px 1fr}.dayplan-row>div:last-child{grid-column:2}.bottom-nav{position:fixed;display:grid;grid-template-columns:repeat(5,1fr);left:0;right:0;bottom:0;z-index:1300;background:#fff;border-top:1px solid var(--line);padding:6px 5px max(6px,env(safe-area-inset-bottom));box-shadow:0 -4px 18px rgba(15,23,42,.08)}.bottom-nav button{border:0;background:transparent;margin:0;padding:5px 2px;font-size:.69rem;border-radius:9px;color:var(--text)}.bottom-nav .ico{display:block;font-size:1.15rem;margin-bottom:1px}.quickbar{display:none!important}}
     @media(max-width:390px){.nav-tile b{font-size:.88rem}.nav-tile span{font-size:.72rem}.nav-tile{min-height:108px}}
 
   </style>
 </head>
 <body>
-<header><div><div class="title" onclick="showArea('home')" role="button" tabindex="0" title="Zur Übersicht"><img class="app-logo" src="icon-192.png" alt="">Urlaubsplaner</div><div class="small">Deine Reise. Perfekt geplant.</div></div><div class="head-actions"><button id="installApp" class="primary" type="button" title="Urlaubsplaner als App installieren">⬇ App installieren</button><div class="badge">Version 5.6</div></div></header>
+<header><div><div class="title" onclick="showArea('home')" role="button" tabindex="0" title="Zur Übersicht"><img class="app-logo" src="icon-192.png" alt="">Urlaubsplaner</div><div class="small">Deine Reise. Perfekt geplant.</div></div><div class="head-actions"><button id="installApp" class="primary" type="button" title="Urlaubsplaner als App installieren">⬇ App installieren</button><div class="badge">Version 5.9</div></div></header>
 
 <main><div class="grid">
 <section id="homeHero" class="card home-hero">
-  <div class="hero-top"><div><div class="hero-title" id="homeTripTitle">Bereit für die nächste Reise?</div><div class="small" id="homeTripMeta">Lege eine Reise an oder wähle eine vorhandene Reise.</div></div><div class="hero-pill">Version 5.6</div></div>
+  <div class="hero-top"><div><div class="hero-title" id="homeTripTitle">Bereit für die nächste Reise?</div><div class="small" id="homeTripMeta">Lege eine Reise an oder wähle eine vorhandene Reise.</div></div><div class="hero-pill">Version 5.9</div></div>
   <div class="hero-kpis"><div class="hero-kpi"><b id="homeDays">–</b><span>Tage</span></div><div class="hero-kpi"><b id="homeKm">–</b><span>Strecke</span></div><div class="hero-kpi"><b id="homeStops">–</b><span>Stopps</span></div><div class="hero-kpi"><b id="homeCosts">–</b><span>Etappenkosten</span></div></div>
 </section>
 <section id="homeDashboard" class="card dash-wrap">
-  <div class="dash-head"><div><h2>Was möchtest du machen?</h2><div class="small">Alle Funktionen der Version 5.2 bleiben erhalten – jetzt übersichtlich nach Bereichen sortiert.</div></div><div class="small">Tippe auf eine Kachel</div></div>
+  <div class="dash-head"><div><h2>Was möchtest du machen?</h2><div class="small">Alle Reisebereiche an einem Ort – ergänzt um den persönlichen Reiseassistenten 5.9.</div></div><div class="small">Tippe auf eine Kachel</div></div>
   <div class="tile-grid">
     <button class="nav-tile" onclick="showArea('reisen')"><span class="ico">🧳</span><b>Meine Reisen</b><span>Anlegen, auswählen, suchen & verwalten</span></button>
     <button class="nav-tile" onclick="showArea('route')"><span class="ico">🗺️</span><b>Route & Karte</b><span>Etappen, Karte, Routing & Timeline</span></button>
@@ -93,10 +94,12 @@
     <button class="nav-tile" onclick="showArea('kosten')"><span class="ico">💶</span><b>Kosten & Budget</b><span>Diesel, Zahlungen & Tageskosten</span></button>
     <button class="nav-tile" onclick="showArea('buchungen')"><span class="ico">🏕️</span><b>Übernachten & Buchungen</b><span>Stellplätze, Hotels & Reservierungen</span></button>
     <button class="nav-tile" onclick="showArea('vorbereitung')"><span class="ico">📋</span><b>Reisevorbereitung</b><span>Packliste, Dokumente & Ländercheck</span></button>
-    <button class="nav-tile" onclick="showArea('unterwegs')"><span class="ico">🌦️</span><b>Unterwegs</b><span>Wetter, Maut, Fähren & Ruhetage</span></button>
+    <button class="nav-tile" onclick="showArea('entdecken')"><span class="ico">🧭</span><b>Entdecken</b><span>POIs, braune Schilder & Merkliste</span></button><button class="nav-tile" onclick="showArea('unterwegs')"><span class="ico">🌦️</span><b>Unterwegs</b><span>Wetter, Maut, Fähren & Ruhetage</span></button>
     <button class="nav-tile" onclick="showArea('gemeinsam')"><span class="ico">👥</span><b>Gemeinsam reisen</b><span>Cloud, Synchronisierung & Freigaben</span></button>
     <button class="nav-tile" onclick="showArea('journal')"><span class="ico">📖</span><b>Reisejournal</b><span>Erlebnisse, Favoriten & Fotomotive</span></button>
     <button class="nav-tile" onclick="showArea('export')"><span class="ico">💾</span><b>Sicherung & Export</b><span>Backup, GPX, Kalender, Druck & Teilen</span></button>
+    <button class="nav-tile" onclick="showArea('assistent')"><span class="ico">🪄</span><b>Mein Reiseassistent</b><span>Mach meinen Tag, Plan B & persönlicher Reisegeschmack</span></button>
+    <button class="nav-tile" onclick="showArea('begleiter')"><span class="ico">🧭</span><b>Reisebegleiter</b><span>Heute, nächstes Ziel, Wetter, Reichweite & Erinnerungen</span></button>
     <button class="nav-tile" onclick="showArea('ki')"><span class="ico">🤖</span><b>KI-Assistent</b><span>Fragen zur aktuellen Reise stellen</span></button>
   </div>
 </section>
@@ -215,7 +218,7 @@
  <button class="primary" onclick="searchNearby()">🔎 POIs in der Umgebung suchen</button><div id="nearResults"></div>
 </section>
 
-<section class="card span12">
+<section class="card span12" data-area="entdecken">
  <h2>🟫 Sehenswürdigkeiten entlang der Route</h2>
  <div class="small">Wie die braunen touristischen Hinweistafeln an der Autobahn: Finde besondere Ziele direkt an deiner geplanten Fahrstrecke. Die Suche zeigt touristisch interessante Orte aus OpenStreetMap; sie bedeutet nicht, dass dort tatsächlich ein braunes Straßenschild steht.</div>
  <div class="row3" style="margin-top:8px">
@@ -226,6 +229,8 @@
  <div class="toolbar"><button class="primary" onclick="searchRoutePOIs()">🟫 Entlang meiner Route suchen</button></div>
  <div id="routePoiStatus" class="small"></div><div id="routePoiResults"></div>
 </section>
+<section class="card span7" data-area="entdecken"><h2>🗺️ Entdecken-Karte</h2><div class="small">Route, geplante Etappen und gefundene oder gemerkte POIs gemeinsam auf einer Karte.</div><div class="discover-filters"><button onclick="fitDiscoverMap()">Alles anzeigen</button><button onclick="clearFoundPOIs()">Treffer ausblenden</button></div><div id="discoverMap" class="discover-map"></div></section>
+<section class="card span5" data-area="entdecken"><h2>❤️ POI-Merkliste</h2><div class="small">Ziele erst merken, bewerten und später an der passenden Stelle in die Reise einfügen.</div><div id="poiWishlist"></div></section>
 
 <section class="card span4"><h2>🎒 Packliste</h2><div class="row"><input id="packText" placeholder="z. B. Stromadapter"><button onclick="addPack()">Hinzufügen</button></div><div id="packList"></div></section>
 <section class="card span4"><h2>📄 Reisedokumente</h2><div class="row"><input id="docText" placeholder="z. B. Reisepass"><input id="docExpiry" type="date"></div><button onclick="addDoc()">Dokument speichern</button><div id="docList"></div></section>
@@ -241,6 +246,48 @@
 <section class="card span6"><h2>📍 GPX-Export</h2><div class="small">Exportiert alle Etappen mit vorhandenen Koordinaten für Navigations- und Kartenprogramme.</div><button onclick="exportGPX()">Aktuelle Reise als GPX exportieren</button></section>
 <section class="card span6"><h2>👥 Reise teilen</h2><div class="small">Erstellt eine kompakte Zusammenfassung für WhatsApp, E-Mail oder andere Apps.</div><button onclick="shareTrip()">Reise teilen / Text kopieren</button><div id="shareOut"></div></section>
 
+
+<section class="card span12" data-area="assistent">
+ <h2>🪄 Mein Reiseassistent <span class="assistant-badge">5.9</span></h2>
+ <div class="small">Drei praktische Funktionen, die auch ohne OpenAI-Guthaben arbeiten: Tagesidee, sicherer Plan B und ein persönlicher Reisegeschmack.</div>
+ <div class="assistant-grid">
+  <div class="assistant-card">
+   <h3>☀️ Mach meinen Tag</h3>
+   <div class="small">Erstellt aus deiner Reise, POI-Merkliste und deinen Vorlieben einen realistischen Tagesvorschlag.</div>
+   <select id="dayMood59"><option value="mix">✨ Abwechslungsreich</option><option value="relaxed">☕ Entspannt</option><option value="nature">🌄 Natur & Aussicht</option><option value="culture">🏛 Kultur & Geschichte</option></select>
+   <div class="row"><input id="dayHours59" type="number" min="2" max="12" value="8" placeholder="Zeit in Stunden"><input id="dayPoiCount59" type="number" min="1" max="5" value="3" placeholder="Max. Ziele"></div>
+   <button class="primary" onclick="makeMyDay59()">🪄 Tagesidee erstellen</button>
+   <div id="dayIdea59" class="assistant-output">Noch keine Tagesidee erstellt.</div>
+  </div>
+  <div class="assistant-card">
+   <h3>🛟 Plan B</h3>
+   <div class="small">Die ursprüngliche Reise bleibt erhalten. Die App schlägt nur Alternativen vor.</div>
+   <select id="planBReason59"><option value="weather">🌧 Schlechtes Wetter</option><option value="long">🚐 Fahrtag zu lang</option><option value="closed">🚧 Ziel geschlossen / fällt aus</option><option value="tired">😌 Heute weniger Programm</option></select>
+   <div class="assistant-actions"><button class="primary" onclick="createPlanB59()">Plan B erstellen</button><button onclick="savePlanA59()">🔒 Plan A sichern</button><button onclick="restorePlanA59()">↩ Plan A wiederherstellen</button></div>
+   <div id="planBOut59" class="assistant-output">Plan A wird niemals automatisch überschrieben.</div>
+  </div>
+  <div class="assistant-card">
+   <h3>💎 Mein Reisegeschmack</h3>
+   <div class="small">Lege fest, was du besonders gern siehst. Gefundene POIs können danach passend sortiert werden.</div>
+   <div id="tasteQuick59"></div>
+   <div class="assistant-actions"><button onclick="learnTaste59()">Aus Merkliste lernen</button><button class="primary" onclick="sortPOIsByTaste59()">POIs passend sortieren</button></div>
+   <div id="tasteStatus59" class="small"></div>
+  </div>
+ </div>
+</section>
+<section class="card span12" data-area="assistent">
+ <h2>💎 Persönliches Reiseprofil</h2>
+ <div class="taste-grid" id="tasteEditor59"></div>
+ <div class="assistant-actions"><button class="primary" onclick="saveTaste59()">Profil speichern</button><button onclick="resetTaste59()">Zurücksetzen</button></div>
+ <div class="compact-hint">Das Profil wird zusammen mit deinen Zusatzdaten lokal gespeichert und über deine bestehende Cloud-Sicherung mitgenommen.</div>
+</section>
+
+<section class="card span12" data-area="begleiter">
+ <h2>🧭 Reisebegleiter · Heute</h2>
+ <div class="small">Deine aktuelle Reise für heute auf einen Blick.</div>
+ <div id="todayCompanion"></div>
+ <div class="today-actions"><button class="primary" onclick="refreshCompanion()">↻ Heute aktualisieren</button><button onclick="showArea('route')">🗺️ Route öffnen</button><button onclick="showArea('entdecken')">⭐ POIs entdecken</button></div>
+</section>
 
 <section class="card span12">
  <h2>🧭 Reise-Cockpit 4.2</h2>
@@ -299,6 +346,8 @@
 <script>
 const KEY="urlaubsplaner_trips_v3", OLDKEY="urlaubsplaner_trips_v2";
 let selectedId=null,map=null,markersLayer=null,routeLayer=null,lastRouteKm=0,lastRouteHours=0;
+let discoverMap=null,discoverRouteLayer=null,discoverPoiLayer=null,discoverStopLayer=null,lastRoutePOIs=[];
+const POI_WISH_KEY="urlaubsplaner_poi_wishlist_v57";
 
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
@@ -520,19 +569,32 @@ async function searchRoutePOIs(){
  const t=getSelected();if(!t)return alert("Bitte zuerst eine Reise auswählen.");
  const geom=t.routeSummary?.geometry;
  if(!geom?.coordinates?.length){routePoiStatus.textContent="Bitte zuerst unter Route & Karte die Route berechnen.";return}
- routePoiStatus.textContent="Touristische Ziele entlang der Route werden gesucht …";routePoiResults.innerHTML="";
- const coords=geom.coordinates;
- const maxPts=45,step=Math.max(1,Math.ceil(coords.length/maxPts));
- const sampled=coords.filter((_,i)=>i%step===0).slice(0,maxPts).map(c=>[c[1],c[0]]);
- const last=coords[coords.length-1];if(sampled.length&&last&&sampled[sampled.length-1][0]!==last[1])sampled.push([last[1],last[0]]);
+ routePoiStatus.textContent="Touristische Ziele werden abschnittsweise entlang der Route gesucht …";routePoiResults.innerHTML="";
+ const coords=geom.coordinates,maxPts=45,step=Math.max(1,Math.ceil(coords.length/maxPts));
+ const sampled=coords.filter((_,i)=>i%step===0).slice(0,maxPts).map(c=>[c[1],c[0]]);const last=coords[coords.length-1];if(sampled.length&&last&&sampled[sampled.length-1][0]!==last[1])sampled.push([last[1],last[0]]);
  try{
   const r=await fetch("/api/route-pois",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({points:sampled,type:routePoiType.value,distance:+routePoiDistance.value||10000,limit:+routePoiLimit.value||40})});
-  const j=await r.json();if(!r.ok)throw new Error(j.error||"Suche fehlgeschlagen");
-  routePoiStatus.textContent=j.results?.length?`✓ ${j.results.length} interessante Ziele entlang der Route gefunden.`:"Keine passenden Ziele im gewählten Abstand gefunden.";
-  routePoiResults.innerHTML=(j.results||[]).map(x=>`<div class="poi poi55"><div><b>${esc(x.name)}</b><div class="poi-meta">ca. ${x.distance_to_route_m>=1000?(x.distance_to_route_m/1000).toFixed(1)+" km":Math.round(x.distance_to_route_m)+" m"} von der Route${x.description?" · "+esc(x.description):""}</div><span class="poi-cat">${esc(x.category||"Sehenswürdigkeit")}</span></div><button onclick='addRoutePOI(${JSON.stringify(JSON.stringify(x))})'>＋ Zwischenziel</button></div>`).join("");
+  const j=await r.json();if(!r.ok)throw new Error(j.error||"Suche fehlgeschlagen");lastRoutePOIs=j.results||[];
+  routePoiStatus.textContent=lastRoutePOIs.length?`✓ ${lastRoutePOIs.length} interessante Ziele gefunden.${j.meta?.partial?" Einige Routenabschnitte konnten wegen Auslastung nicht geprüft werden.":""}`:"Keine passenden Ziele im gewählten Abstand gefunden.";
+  renderRoutePOIs();renderDiscoverMap();
  }catch(e){routePoiStatus.textContent="Suche nicht möglich: "+e.message}
 }
-function addRoutePOI(raw){const x=JSON.parse(raw),a=load(),t=a.find(x=>x.id===selectedId);if(!t)return;t.stops.push({id:Date.now(),date:"",place:x.name,type:"Sehenswürdigkeit",lat:x.lat,lon:x.lon,note:`Entlang der Route · ${x.category||"POI"}${x.description?" · "+x.description:""}`,nightCost:0,tollCost:0,otherCost:0});save(a);routePoiStatus.textContent=`✓ ${x.name} wurde als Zwischenziel übernommen. Route danach neu berechnen.`}
+function poiIcon(cat=""){const c=cat.toLowerCase();if(c.includes("museum"))return"🏛️";if(c.includes("kunst")||c.includes("galer"))return"🎨";if(c.includes("natur")||c.includes("landschaft"))return"🌄";if(c.includes("aussicht"))return"👁️";if(c.includes("burg")||c.includes("schloss")||c.includes("bauwerk")||c.includes("geschichte"))return"🏰";return"⭐"}
+function renderRoutePOIs(){routePoiResults.innerHTML=lastRoutePOIs.map((x,i)=>`<div class="poi poi55"><div><b>${poiIcon(x.category)} ${esc(x.name)}</b><div class="poi-meta">ca. ${x.distance_to_route_m>=1000?(x.distance_to_route_m/1000).toFixed(1)+" km":Math.round(x.distance_to_route_m)+" m"} von der Route${x.description?" · "+esc(x.description):""}</div><span class="poi-cat">${esc(x.category||"Sehenswürdigkeit")}</span></div><div class="poi-actions"><button onclick="rememberRoutePOI(${i})">♡ Merken</button><button onclick="prepareInsertPOI(${i})">＋ Einfügen</button></div></div>`).join("")}
+function poiWishLoad(){try{return JSON.parse(localStorage.getItem(POI_WISH_KEY)||"[]")}catch{return[]}}
+function poiWishSave(a){localStorage.setItem(POI_WISH_KEY,JSON.stringify(a));renderPoiWishlist();renderDiscoverMap()}
+function rememberRoutePOI(i){const x=lastRoutePOIs[i];if(!x)return;const a=poiWishLoad();if(a.some(p=>p.name===x.name&&Math.abs(p.lat-x.lat)<.00001&&Math.abs(p.lon-x.lon)<.00001)){routePoiStatus.textContent="Dieses Ziel steht bereits auf deiner Merkliste.";return}a.push({...x,id:Date.now()+i,priority:"interessant"});poiWishSave(a);routePoiStatus.textContent=`♡ ${x.name} wurde gemerkt.`}
+function setPoiPriority(id,p){const a=poiWishLoad(),x=a.find(x=>x.id===id);if(x)x.priority=p;poiWishSave(a)}
+function delPoiWish(id){poiWishSave(poiWishLoad().filter(x=>x.id!==id))}
+function renderPoiWishlist(){const box=$("poiWishlist");if(!box)return;const a=poiWishLoad(),t=getSelected();box.innerHTML=a.length?a.map(x=>`<div class="wishlist-poi poi-saved"><b>${poiIcon(x.category)} ${esc(x.name)}</b><div class="small">${esc(x.category||"POI")} · ${x.distance_to_route_m?Math.round(x.distance_to_route_m/100)/10+" km von Route":"Entlang der Route"}</div><div><button class="poi-priority" onclick="setPoiPriority(${x.id},'must-see')">⭐ Must-see</button><button class="poi-priority" onclick="setPoiPriority(${x.id},'interessant')">👍 Interessant</button><button class="poi-priority" onclick="setPoiPriority(${x.id},'optional')">○ Optional</button></div><div class="small">Priorität: <b>${esc(x.priority||"interessant")}</b></div><div class="insert-row"><select id="insert_${x.id}">${poiInsertOptions(t)}</select><button onclick="insertWishPOI(${x.id})">Einfügen</button></div><button class="danger" onclick="delPoiWish(${x.id})">Von Merkliste löschen</button></div>`).join(""):'<div class="small">Noch keine POIs gemerkt.</div>'}
+function poiInsertOptions(t){const st=t?.stops||[];let o='<option value="-1">Am Anfang</option>';st.forEach((s,i)=>o+=`<option value="${i}" ${i===st.length-1?'selected':''}>Nach ${i+1}. ${esc(s.place)}</option>`);return o}
+function makePoiStop(x){return{id:Date.now()+Math.floor(Math.random()*9999),date:"",place:x.name,type:"Sehenswürdigkeit",lat:+x.lat,lon:+x.lon,note:`Entlang der Route · ${x.category||"POI"} · Priorität: ${x.priority||"interessant"}${x.description?" · "+x.description:""}`,nightCost:0,tollCost:0,otherCost:0}}
+function insertWishPOI(id){const x=poiWishLoad().find(x=>x.id===id),a=load(),t=a.find(x=>x.id===selectedId);if(!x||!t)return;const after=+$(`insert_${id}`).value;t.stops.splice(after+1,0,makePoiStop(x));save(a);routePoiStatus.textContent=`✓ ${x.name} wurde passend in die Reise eingefügt. Route bitte neu berechnen.`}
+function prepareInsertPOI(i){const x=lastRoutePOIs[i],a=load(),t=a.find(x=>x.id===selectedId);if(!x||!t)return;let after=t.stops.length-1;if(t.stops.length>1){let best=Infinity;t.stops.forEach((s,idx)=>{if(Number.isFinite(s.lat)&&Number.isFinite(s.lon)){const d=(s.lat-x.lat)**2+(s.lon-x.lon)**2;if(d<best){best=d;after=idx}}})}t.stops.splice(after+1,0,makePoiStop({...x,priority:"interessant"}));save(a);routePoiStatus.textContent=`✓ ${x.name} wurde nach der nächstgelegenen Etappe eingefügt. Route bitte neu berechnen.`}
+function initDiscoverMap(){const el=$("discoverMap");if(!el||discoverMap)return;discoverMap=L.map(el).setView([51.1,10.4],5);L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"© OpenStreetMap"}).addTo(discoverMap);discoverStopLayer=L.layerGroup().addTo(discoverMap);discoverPoiLayer=L.layerGroup().addTo(discoverMap)}
+function renderDiscoverMap(){initDiscoverMap();if(!discoverMap)return;discoverStopLayer.clearLayers();discoverPoiLayer.clearLayers();if(discoverRouteLayer){discoverMap.removeLayer(discoverRouteLayer);discoverRouteLayer=null}const t=getSelected(),g=t?.routeSummary?.geometry;if(g){discoverRouteLayer=L.geoJSON(g,{weight:5}).addTo(discoverMap)}(t?.stops||[]).filter(s=>Number.isFinite(s.lat)&&Number.isFinite(s.lon)).forEach((s,i)=>L.marker([s.lat,s.lon]).addTo(discoverStopLayer).bindPopup(`<b>${i+1}. ${esc(s.place)}</b><br>Geplante Etappe`));[...lastRoutePOIs,...poiWishLoad()].forEach(x=>{if(Number.isFinite(+x.lat)&&Number.isFinite(+x.lon))L.circleMarker([+x.lat,+x.lon],{radius:7}).addTo(discoverPoiLayer).bindPopup(`<b>${poiIcon(x.category)} ${esc(x.name)}</b><br>${esc(x.category||"POI")}`)});fitDiscoverMap()}
+function fitDiscoverMap(){if(!discoverMap)return;const groups=[];if(discoverRouteLayer)groups.push(discoverRouteLayer);if(discoverStopLayer.getLayers().length)groups.push(discoverStopLayer);if(discoverPoiLayer.getLayers().length)groups.push(discoverPoiLayer);if(groups.length){const fg=L.featureGroup(groups.flatMap(g=>g.getLayers?g.getLayers():[g]));try{discoverMap.fitBounds(fg.getBounds().pad(.12))}catch{}}setTimeout(()=>discoverMap.invalidateSize(),100)}
+function clearFoundPOIs(){lastRoutePOIs=[];renderRoutePOIs();renderDiscoverMap();routePoiStatus.textContent="Gefundene Treffer wurden ausgeblendet; die Merkliste bleibt erhalten."}
 
 async function loadWeather(){
  const t=getSelected(),st=t?.stops.find(x=>x.id===+$("weatherStop").value);if(!st||!Number.isFinite(st.lat)){alert("Etappe benötigt Koordinaten.");return}
@@ -542,7 +604,7 @@ async function loadWeather(){
 }
 function exportGPX(){
  const t=getSelected();if(!t)return;const pts=t.stops.filter(s=>Number.isFinite(s.lat)&&Number.isFinite(s.lon));if(!pts.length){alert("Keine Koordinaten vorhanden.");return}
- const xml=`<?xml version="1.0" encoding="UTF-8"?><gpx version="1.1" creator="Urlaubsplaner 5.2" xmlns="http://www.topografix.com/GPX/1/1"><metadata><name>${esc(t.title)}</name></metadata>${pts.map(s=>`<wpt lat="${s.lat}" lon="${s.lon}"><name>${esc(s.place)}</name><desc>${esc(s.note||s.type)}</desc></wpt>`).join("")}<rte><name>${esc(t.title)}</name>${pts.map(s=>`<rtept lat="${s.lat}" lon="${s.lon}"><name>${esc(s.place)}</name></rtept>`).join("")}</rte></gpx>`;
+ const xml=`<?xml version="1.0" encoding="UTF-8"?><gpx version="1.1" creator="Urlaubsplaner 5.9" xmlns="http://www.topografix.com/GPX/1/1"><metadata><name>${esc(t.title)}</name></metadata>${pts.map(s=>`<wpt lat="${s.lat}" lon="${s.lon}"><name>${esc(s.place)}</name><desc>${esc(s.note||s.type)}</desc></wpt>`).join("")}<rte><name>${esc(t.title)}</name>${pts.map(s=>`<rtept lat="${s.lat}" lon="${s.lon}"><name>${esc(s.place)}</name></rtept>`).join("")}</rte></gpx>`;
  downloadText((t.title||"reise").replace(/[^a-z0-9_-]+/gi,"_")+".gpx",xml,"application/gpx+xml");
 }
 function downloadText(name,text,type){const b=new Blob([text],{type}),u=URL.createObjectURL(b),a=document.createElement("a");a.href=u;a.download=name;a.click();URL.revokeObjectURL(u)}
@@ -550,6 +612,7 @@ function backupAll(){const o={version:"1.7",trips:load(),vehicle:localStorage.ge
 async function restoreAll(){const f=$("restoreFile").files[0];if(!f)return alert("Bitte Backup-Datei wählen.");try{const o=JSON.parse(await f.text());if(!Array.isArray(o.trips))throw Error("Ungültiges Backup");localStorage.setItem(KEY,JSON.stringify(o.trips));if(o.vehicle)localStorage.setItem(VEHICLE_KEY,o.vehicle);setArr(PACK_KEY,o.pack||[]);localStorage.setItem(DOC_KEY,JSON.stringify(o.docs||[]));localStorage.setItem(FAV_KEY,JSON.stringify(o.favs||[]));localStorage.setItem(BUDGET_KEY,o.budget||"0");if(o.journal)localStorage.setItem(JOURNAL_KEY,o.journal);selectedId=o.trips[0]?.id??null;loadVehicle();render();alert("Backup wiederhergestellt.")}catch(e){alert("Backup konnte nicht gelesen werden: "+e.message)}}
 async function shareTrip(){const t=getSelected();if(!t)return;const txt=`${t.title}\n${t.start||""} – ${t.end||""}\n${t.origin||""} → ${t.destination||""}\n\n${t.stops.map((s,i)=>`Tag ${i+1}: ${s.place} (${s.type})`).join("\n")}${t.routeSummary?`\n\nGesamt: ${Math.round(t.routeSummary.distanceKm||0)} km · ${formatHours(t.routeSummary.durationHours||0)}`:""}`;try{if(navigator.share){await navigator.share({title:t.title,text:txt})}else{await navigator.clipboard.writeText(txt);$("shareOut").innerHTML='<div class="sharebox">Text wurde kopiert.</div>'}}catch{$("shareOut").innerHTML=`<div class="sharebox">${esc(txt)}</div>`}}
 function renderExtras(){
+ renderPoiWishlist();
  const pack=arrKey(PACK_KEY);$("packList").innerHTML=pack.map(x=>`<div class="checkitem"><input type="checkbox" ${x.done?"checked":""} onchange="togglePack(${x.id})"><span style="${x.done?"text-decoration:line-through":""}">${esc(x.text)}</span><button style="width:auto;margin-left:auto" onclick="delPack(${x.id})">×</button></div>`).join("")||'<div class="small">Noch leer.</div>';
  const docs=arrKey(DOC_KEY);$("docList").innerHTML=docs.map(x=>`<div class="docitem"><span>${esc(x.text)}<br><span class="small">${x.expiry?`gültig bis ${esc(x.expiry)}`:"kein Ablaufdatum"}</span></span><button style="width:auto" onclick="delDoc(${x.id})">×</button></div>`).join("")||'<div class="small">Noch keine Dokumente.</div>';
  const b=+localStorage.getItem(BUDGET_KEY)||0;if($("budget"))$("budget").value=b||"";
@@ -605,12 +668,12 @@ function render(){
  const a=load();if(selectedId==null&&a.length)selectedId=a[0].id;
  $("trips").innerHTML=a.length?a.map(t=>`<div class="trip ${t.id===selectedId?"active":""}" onclick="selectTrip(${t.id})"><b>${esc(t.title)}</b><div class="small">${esc(t.start||"?")} – ${esc(t.end||"?")}<br>${esc(t.origin||"")} → ${esc(t.destination||"")}<br>${esc(t.mode)} · ${(t.stops||[]).length} Etappen</div></div>`).join(""):'<div class="small">Noch keine Reise angelegt.</div>';
  const t=a.find(x=>x.id===selectedId);$("noTrip").classList.toggle("hidden",!!t);$("detail").classList.toggle("hidden",!t);
- if(!t){$("stops").innerHTML='<div class="small">Noch keine Reise gewählt.</div>';updateMap(null);renderExtras();render42();return}
+ if(!t){$("stops").innerHTML='<div class="small">Noch keine Reise gewählt.</div>';updateMap(null);renderExtras();render42();renderAssistant59();return}
  $("detailTitle").textContent=t.title;$("detailMeta").textContent=`${t.start||"?"} – ${t.end||"?"} · ${t.origin||""} → ${t.destination||""} · ${t.mode}`;
  const fixed=t.stops.reduce((n,s)=>n+(+s.nightCost||0)+(+s.tollCost||0)+(+s.otherCost||0),0);
  $("summary").innerHTML=`<div class="metric"><b>${t.stops.length}</b><span class="small">Stopps</span></div><div class="metric"><b>${fixed.toFixed(2)} €</b><span class="small">eingetragene Kosten</span></div>`;
  $("stops").innerHTML=t.stops.length?t.stops.map((s,i)=>`<div class="stop"><div class="stopnum">${i+1}</div><div><div class="stop-title">${esc(s.place)}</div><div class="small">${esc(s.date||"Datum offen")} · ${esc(s.type)}</div>${s.note?`<div style="margin-top:4px">${esc(s.note)}</div>`:""}<span class="tag">${Number.isFinite(s.lat)&&Number.isFinite(s.lon)?"📍 Ort gefunden":"⚠️ keine Koordinaten"}</span>${s.nightCost?`<span class="tag">🏕 ${(+s.nightCost).toFixed(2)} €</span>`:""}${s.tollCost?`<span class="tag">🛣 ${(+s.tollCost).toFixed(2)} €</span>`:""}${s.otherCost?`<span class="tag">€ ${(+s.otherCost).toFixed(2)}</span>`:""}</div><div class="stopactions"><button onclick="editStop(${s.id})">✎</button><button onclick="moveStop(${s.id},-1)">↑</button><button onclick="moveStop(${s.id},1)">↓</button><button onclick="delStop(${s.id})">×</button></div></div>`).join(""):'<div class="small">Noch keine Etappen vorhanden.</div>';
- updateMap(t);renderTimeline(t);renderExtras();render42();
+ updateMap(t);renderTimeline(t);renderExtras();render42();renderAssistant59();
 }
 
 const AREA_INFO={
@@ -622,10 +685,13 @@ const AREA_INFO={
  kosten:["💶 Kosten & Budget","Reisekosten, Zahlungen, Budget und Tageskosten"],
  buchungen:["🏕️ Übernachten & Buchungen","Buchungen und Übernachtungsplanung"],
  vorbereitung:["📋 Reisevorbereitung","Packen, Dokumente, Reisende und Checklisten"],
+ entdecken:["🧭 Entdecken & Reise gestalten","POIs entlang der Route finden, merken und passend einfügen"],
  unterwegs:["🌦️ Unterwegs","Wetter, Umgebung, Maut, Fähren und Fahrtage"],
  gemeinsam:["👥 Gemeinsam reisen","Persönliche Cloud-Sicherung und gemeinsame Reisen"],
  journal:["📖 Reisejournal","Erlebnisse, Favoriten, Fotos und Wünsche"],
- export:["💾 Sicherung & Export","Backup, Export, Kalender, Drucken und Teilen"]
+ export:["💾 Sicherung & Export","Backup, Export, Kalender, Drucken und Teilen"],
+ assistent:["🪄 Mein Reiseassistent","Mach meinen Tag, Plan B und persönlicher Reisegeschmack"],
+ begleiter:["🧭 Reisebegleiter","Heute, nächstes Ziel, Wetter, Reichweite und Erinnerungen"]
 };
 function detectArea(section){
  if(section.id==="cloudCard")return "gemeinsam";
@@ -640,7 +706,9 @@ function detectArea(section){
  if(h.includes("reisekosten")||h.includes("reisebudget")||h.includes("zahlungen")||h.includes("kosten pro tag"))return "kosten";
  if(h.includes("buchungen")||h.includes("übernachtungsstatus"))return "buchungen";
  if(h.includes("packliste")||h.includes("reisedokumente")||h.includes("reisende")||h.includes("haustiere")||h.includes("notfallkontakte")||h.includes("erinnerungen")||h.includes("länder-checkliste")||h.includes("vorräte")||h.includes("einkaufsliste")||h.includes("essensplanung"))return "vorbereitung";
- if(h.includes("umgebung entdecken")||h.includes("wetter")||h.includes("maut & vignetten")||h.includes("fähren")||h.includes("ruhetage")||h.includes("tageskilometer"))return "unterwegs";
+ if(h.includes("mein reiseassistent")||h.includes("persönliches reiseprofil"))return "assistent";
+ if(h.includes("umgebung entdecken"))return "entdecken";
+ if(h.includes("wetter")||h.includes("maut & vignetten")||h.includes("fähren")||h.includes("ruhetage")||h.includes("tageskilometer"))return "unterwegs";
  if(h.includes("favoriten")||h.includes("reisejournal")||h.includes("foto-merkliste")||h.includes("wunschliste"))return "journal";
  if(h.includes("sicherung")||h.includes("gpx-export")||h.includes("reise teilen")||h.includes("kalenderexport")||h.includes("druckansicht"))return "export";
  return "reisen";
@@ -659,6 +727,9 @@ function showArea(area){
  if(!home){const info=AREA_INFO[area]||["Bereich",""];document.getElementById("areaTitle").textContent=info[0];document.getElementById("areaSub").textContent=info[1];window.scrollTo({top:0,behavior:"smooth"});}
  else{updateHomeSummary();window.scrollTo({top:0,behavior:"smooth"});}
  if(area==="route"&&window.map)setTimeout(()=>{try{map.invalidateSize()}catch{}},180);
+ if(area==="entdecken")setTimeout(()=>{renderPoiWishlist();renderDiscoverMap()},180);
+ if(area==="assistent")setTimeout(renderAssistant59,80);
+ if(area==="begleiter")setTimeout(refreshCompanion,80);
  localStorage.setItem("urlaubsplaner_area_v54",area);
 }
 function updateHomeSummary(){
@@ -672,6 +743,44 @@ function updateHomeSummary(){
  const cost=(t.stops||[]).reduce((n,x)=>n+(+x.nightCost||0)+(+x.tollCost||0)+(+x.otherCost||0),0);homeCosts.textContent=cost.toFixed(0)+" €";
 }
 
+
+const TASTE_CATS59=[
+ ["nature","🌄 Natur & Landschaft"],["viewpoint","👁 Aussichtspunkte"],["history","🏰 Burgen, Schlösser & Geschichte"],["museum","🏛 Museen"],["art","🎨 Kunst & Galerien"],["architecture","⛪ Bauwerke & Architektur"],["town","🏘 Altstädte & Orte"],["camp","🏕 Camping & Stellplätze"]
+];
+function tasteDefaults59(){return {nature:3,viewpoint:3,history:3,museum:2,art:2,architecture:3,town:3,camp:3}}
+function getTaste59(){const o=ext();return {...tasteDefaults59(),...(o.travelTaste59||{})}}
+function setTaste59(v){const o=ext();o.travelTaste59=v;localStorage.setItem(EXT_KEY,JSON.stringify(o));renderAssistant59()}
+function tasteLabel59(v){return ["Nicht wichtig","Gelegentlich","Gern","Sehr gern"][+v]||"Gern"}
+function renderAssistant59(){
+ const ed=$("tasteEditor59"),quick=$("tasteQuick59");if(!ed||!quick)return;const t=getTaste59();
+ ed.innerHTML=TASTE_CATS59.map(([k,l])=>`<div class="taste-row"><div><b>${l}</b><div class="taste-score">${tasteLabel59(t[k])}</div></div><select id="taste59_${k}"><option value="0" ${t[k]==0?'selected':''}>0 · Nicht wichtig</option><option value="1" ${t[k]==1?'selected':''}>1 · Gelegentlich</option><option value="2" ${t[k]==2?'selected':''}>2 · Gern</option><option value="3" ${t[k]==3?'selected':''}>3 · Sehr gern</option></select></div>`).join("");
+ const top=TASTE_CATS59.map(([k,l])=>({k,l,v:+t[k]})).sort((a,b)=>b.v-a.v).slice(0,4);quick.innerHTML=top.map(x=>`<span class="taste-chip">${x.l} · ${tasteLabel59(x.v)}</span>`).join("");
+}
+function saveTaste59(){const v={};TASTE_CATS59.forEach(([k])=>v[k]=+$(`taste59_${k}`).value);setTaste59(v);tasteStatus59.textContent="✓ Reiseprofil gespeichert."}
+function resetTaste59(){if(!confirm("Persönlichen Reisegeschmack auf die Grundeinstellung zurücksetzen?"))return;setTaste59(tasteDefaults59());tasteStatus59.textContent="Grundeinstellung wiederhergestellt."}
+function poiTasteKey59(x){const c=`${x?.category||''} ${x?.stopType||''} ${x?.name||''}`.toLowerCase();if(/natur|landschaft|park|see|berg|wald/.test(c))return"nature";if(/aussicht|viewpoint|panorama/.test(c))return"viewpoint";if(/burg|schloss|geschichte|histor|denkmal|castle/.test(c))return"history";if(/museum/.test(c))return"museum";if(/kunst|galer|art/.test(c))return"art";if(/kirche|dom|kloster|bauwerk|architektur|architecture/.test(c))return"architecture";if(/altstadt|stadt|dorf|town/.test(c))return"town";if(/camp|stellplatz|caravan/.test(c))return"camp";return"town"}
+function learnTaste59(){const w=poiWishLoad();if(!w.length){tasteStatus59.textContent="Noch keine POIs auf der Merkliste, aus denen gelernt werden kann.";return}const base=getTaste59(),sum={},cnt={};w.forEach(x=>{const k=poiTasteKey59(x),p=x.priority==='must-see'?3:x.priority==='optional'?1:2;sum[k]=(sum[k]||0)+p;cnt[k]=(cnt[k]||0)+1});Object.keys(sum).forEach(k=>base[k]=Math.max(base[k]||0,Math.round(sum[k]/cnt[k])));setTaste59(base);tasteStatus59.textContent=`✓ Aus ${w.length} gemerkten POI(s) gelernt.`}
+function tasteScore59(x){const t=getTaste59(),k=poiTasteKey59(x);let score=(t[k]??2)*100;score-=Math.min(80,(+x.distance_to_route_m||0)/250);if(x.priority==='must-see')score+=80;if(x.priority==='optional')score-=20;return score}
+function sortPOIsByTaste59(){if(!lastRoutePOIs.length){tasteStatus59.textContent="Bitte zuerst POIs entlang der Route suchen.";return}lastRoutePOIs.sort((a,b)=>tasteScore59(b)-tasteScore59(a));renderRoutePOIs();renderDiscoverMap();tasteStatus59.textContent=`✓ ${lastRoutePOIs.length} POIs nach deinem Reisegeschmack sortiert.`}
+function todayIndex59(t){const today=localISODate(),st=t?.stops||[];let i=st.findIndex(x=>x.date===today);if(i<0)i=st.findIndex(x=>x.date&&x.date>today);if(i<0)i=0;return Math.max(0,i)}
+function candidatesForDay59(mood){const taste=getTaste59(),w=poiWishLoad().map(x=>({...x,_source:'Merkliste'})),f=lastRoutePOIs.map(x=>({...x,_source:'Route'}));let a=[...w,...f];const wanted=mood==='nature'?['nature','viewpoint']:mood==='culture'?['history','museum','art','architecture','town']:null;if(wanted)a=a.filter(x=>wanted.includes(poiTasteKey59(x)));a.sort((x,y)=>tasteScore59(y)-tasteScore59(x));const seen=new Set();return a.filter(x=>{const k=(x.name||'')+'|'+(+x.lat).toFixed(4)+'|'+(+x.lon).toFixed(4);if(seen.has(k))return false;seen.add(k);return true})}
+function makeMyDay59(){const t=getSelected();if(!t){dayIdea59.textContent="Bitte zuerst eine Reise auswählen.";return}const mood=dayMood59.value,hours=Math.max(2,+dayHours59.value||8),max=Math.max(1,+dayPoiCount59.value||3),idx=todayIndex59(t),cur=t.stops?.[idx],next=t.stops?.[idx+1],cand=candidatesForDay59(mood).slice(0,max);const parts=[];parts.push(`<b>☀️ Tagesidee für ${esc(cur?.place||t.destination||t.title)}</b>`);parts.push(`<div class="day-idea-item">☕ <b>Ruhiger Start</b> · ungefähr ${mood==='relaxed'?'10:00':'09:00'} Uhr</div>`);cand.forEach((x,i)=>parts.push(`<div class="day-idea-item">${poiIcon(x.category)} <b>${esc(x.name)}</b><br><span class="small">${esc(x.category||'POI')} · ${x.distance_to_route_m?Math.round(x.distance_to_route_m/100)/10+' km von Route':''} · ${i===0?'Vormittag':i===1?'Nachmittag':'optional'}</span></div>`));if(next)parts.push(`<div class="day-idea-item">🚐 <b>Nächste Etappe im Blick:</b> ${esc(next.place)}</div>`);parts.push(`<div class="compact-hint">Geplant für etwa ${hours} Stunden. Dies ist ein Vorschlag; deine Reise wird nicht verändert.</div>`);dayIdea59.innerHTML=parts.join('') }
+function planABackups59(){const o=ext();o.planABackups59=o.planABackups59||{};return o}
+function savePlanA59(){const t=getSelected();if(!t){planBOut59.textContent="Bitte zuerst eine Reise auswählen.";return}const o=planABackups59();o.planABackups59[String(t.id)]=JSON.parse(JSON.stringify(t));localStorage.setItem(EXT_KEY,JSON.stringify(o));planBOut59.innerHTML=`<div class="planb-safe">🔒 Plan A für „${esc(t.title)}“ wurde gesichert.</div>`}
+function restorePlanA59(){const t=getSelected();if(!t)return;const o=planABackups59(),b=o.planABackups59[String(t.id)];if(!b){planBOut59.textContent="Für diese Reise wurde noch kein Plan A gesichert.";return}if(!confirm("Aktuelle Reise durch den gesicherten Plan A ersetzen?"))return;const a=load(),i=a.findIndex(x=>x.id===t.id);a[i]=JSON.parse(JSON.stringify(b));save(a);planBOut59.innerHTML='<div class="planb-safe">↩ Plan A wurde wiederhergestellt.</div>'}
+function createPlanB59(){const t=getSelected();if(!t){planBOut59.textContent="Bitte zuerst eine Reise auswählen.";return}const idx=todayIndex59(t),cur=t.stops?.[idx],next=t.stops?.[idx+1],reason=planBReason59.value,w=poiWishLoad();let html=`<b>🛟 Plan B für ${esc(cur?.place||t.title)}</b>`;if(reason==='weather'){const indoor=w.filter(x=>['museum','art','history','architecture'].includes(poiTasteKey59(x))).sort((a,b)=>tasteScore59(b)-tasteScore59(a)).slice(0,3);html+=`<div class="planb-warn">🌧 Wetter-Alternative: Outdoor-Programm reduzieren und geschützte Ziele bevorzugen.</div>`;html+=indoor.length?indoor.map(x=>`<div class="day-idea-item">${poiIcon(x.category)} ${esc(x.name)}</div>`).join(''):'<div class="small">Tipp: Suche unter Entdecken nach Museen, Kunst oder Bauwerken und merke passende Ziele.</div>'}else if(reason==='long'){const leg=t.routeSummary?.legs?.[idx];html+=`<div class="planb-warn">🚐 ${leg?`Der nächste Abschnitt hat ca. <b>${Math.round(leg.distance_km)} km</b>. `:''}Plane einen zusätzlichen Zwischenstopp oder verschiebe ${next?esc(next.place):'das nächste Ziel'} auf morgen.</div>`;const near=w.sort((a,b)=>(+a.distance_to_route_m||999999)-(+b.distance_to_route_m||999999)).slice(0,3);html+=near.map(x=>`<div class="day-idea-item">📍 Möglicher Zwischenstopp: <b>${esc(x.name)}</b></div>`).join('')}else if(reason==='closed'){const alt=candidatesForDay59('mix').slice(0,3);html+=`<div class="planb-warn">🚧 Das ausgefallene Ziel wird nicht gelöscht. Diese Alternativen passen zu deinem Profil:</div>`+alt.map(x=>`<div class="day-idea-item">${poiIcon(x.category)} <b>${esc(x.name)}</b></div>`).join('')}else{html+=`<div class="planb-warn">😌 Weniger ist heute mehr: nur ein Highlight, längere Pause und möglichst kurze Weiterfahrt.</div>`;const best=candidatesForDay59('relaxed').slice(0,1);html+=best.map(x=>`<div class="day-idea-item">⭐ Ein einziges Highlight: <b>${esc(x.name)}</b></div>`).join('')}html+=`<div class="compact-hint">Plan A bleibt unverändert. Sichere ihn zusätzlich mit „Plan A sichern“, bevor du manuell Änderungen an der Reise machst.</div>`;planBOut59.innerHTML=html}
+
+function localISODate(){const d=new Date();const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,"0"),day=String(d.getDate()).padStart(2,"0");return `${y}-${m}-${day}`}
+function companionWeatherStop(stop){if(!stop||!Number.isFinite(stop.lat))return;const sel=$("weatherStop");if(sel){sel.value=stop.id;showArea("unterwegs");setTimeout(()=>loadWeather(),150)}}
+function refreshCompanion(){
+ const box=$("todayCompanion");if(!box)return;const t=getSelected();if(!t){box.innerHTML='<div class="today-empty">Bitte zuerst eine Reise auswählen.</div>';return}
+ const today=localISODate(),st=t.stops||[];let idx=st.findIndex(x=>x.date===today);if(idx<0)idx=st.findIndex(x=>x.date&&x.date>today);if(idx<0&&st.length)idx=st.length-1;const cur=st[idx],next=st[idx+1];
+ let days="–";if(t.start){days=Math.max(1,Math.floor((new Date(today+"T12:00:00")-new Date(t.start+"T12:00:00"))/86400000)+1)}
+ const leg=idx>=0&&t.routeSummary?.legs?.[idx]?t.routeSummary.legs[idx]:null;let v={};try{v=JSON.parse(localStorage.getItem(VEHICLE_KEY)||"{}")}catch{}const range=v.consumption?((v.tank||0)/v.consumption*100*.85):0;
+ const rems=bucket("reminders").filter(x=>!x.date||x.date.slice(0,10)>=today).sort((a,b)=>(a.date||"").localeCompare(b.date||""));const bookings=bucket("bookings").filter(x=>x.date===today);
+ if(!cur){box.innerHTML=`<div class="today-empty"><b>${esc(t.title)}</b><br>Für heute (${today}) ist noch keine Etappe eingetragen.</div>`;return}
+ box.innerHTML=`<div class="today-grid"><div class="today-kpi"><b>Tag ${days}</b>Reisetag</div><div class="today-kpi"><b>${esc(cur.place)}</b>heutiger Stopp</div><div class="today-kpi"><b>${next?esc(next.place):"Reiseziel erreicht"}</b>nächstes Ziel</div><div class="today-kpi"><b>${leg?Math.round(leg.distance_km)+" km":"–"}</b>${leg?formatHours(leg.duration_hours):"Fahrt"}</div></div><div class="today-card today-now"><div class="today-main">📍 ${esc(cur.place)}</div><div class="small">${esc(cur.type||"Etappe")} · ${esc(cur.date||"Datum offen")}</div>${cur.note?`<div style="margin-top:7px">${esc(cur.note)}</div>`:""}<div class="today-actions" style="margin-top:8px">${Number.isFinite(cur.lat)?`<button onclick="companionWeatherStop(getSelected().stops[${idx}])">🌦 Wetter hier</button>`:""}<button onclick="showArea('entdecken')">🧭 Umgebung entdecken</button></div></div>${next?`<div class="today-card"><b>➡️ Weiter nach ${esc(next.place)}</b><div class="small">${esc(next.date||"Datum offen")} · ${esc(next.type||"Etappe")}</div>${leg?`<div style="margin-top:6px"><b>${Math.round(leg.distance_km)} km</b> · ${formatHours(leg.duration_hours)}</div>`:"<div class=\"small\">Route für diesen Abschnitt noch nicht berechnet.</div>"}</div>`:""}<div class="today-card"><b>⛽ Fahrzeug & Reichweite</b><div>${range?`Sichere Reichweite mit 15 % Reserve: <b>${Math.round(range)} km</b>`:"Fahrzeugprofil für Reichweitenanzeige ergänzen."}</div></div><div class="today-card"><b>⏰ Nächste Erinnerungen</b>${rems.length?rems.slice(0,3).map(x=>`<div class="docitem"><span>${esc(x.text)}<br><span class="small">${esc(x.date||"")}</span></span></div>`).join(""):"<div class=\"small\">Keine anstehenden Erinnerungen.</div>"}${bookings.length?`<div class="compact-hint">🏕 Heute: ${bookings.map(x=>esc(x.name)).join(", ")}</div>`:""}</div>`;
+}
 window.addEventListener("load",()=>{migrate();initMap();loadVehicle();render();updateHomeSummary();showArea("home")});
 </script>
 

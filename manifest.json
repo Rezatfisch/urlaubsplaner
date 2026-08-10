@@ -1,7 +1,7 @@
 {
-  "name": "Urlaubsplaner 5.6",
+  "name": "Urlaubsplaner 5.9",
   "short_name": "Urlaubsplaner",
-  "description": "Reisen mit Tagesplanung, Routen, Kosten, Cloud und gemeinsamer Bearbeitung organisieren.",
+  "description": "Persönlicher Reiseassistent mit Routen, POIs, Plan B, Tagesideen, Kosten, Cloud und gemeinsamer Bearbeitung.",
   "id": "./",
   "start_url": "./",
   "scope": "./",

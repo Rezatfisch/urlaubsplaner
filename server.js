@@ -25,7 +25,7 @@ app.get("/api/config", (req, res) => {
   });
 });
 
-app.get("/health",(req,res)=>res.json({ok:true,version:"5.1"}));
+app.get("/health",(req,res)=>res.json({ok:true,version:"5.7"}));
 
 app.get("/api/geocode", async (req,res)=>{
   try{
@@ -91,27 +91,60 @@ app.get("/api/nearby", async (req,res)=>{
 app.post("/api/route-pois", async (req,res)=>{
  try{
   const points=Array.isArray(req.body?.points)?req.body.points:[],distance=Math.min(20000,Math.max(1000,+req.body?.distance||10000)),type=String(req.body?.type||"brown"),limit=Math.min(60,Math.max(10,+req.body?.limit||40));
-  if(points.length<2)return res.status(400).json({error:"Bitte zuerst eine Route berechnen."});
-  const safe=points.slice(0,46).filter(p=>Array.isArray(p)&&Number.isFinite(+p[0])&&Number.isFinite(+p[1])).map(p=>[+p[0],+p[1]]);if(safe.length<2)return res.status(400).json({error:"Routendaten fehlen."});
+  const safe=points.slice(0,60).filter(p=>Array.isArray(p)&&Number.isFinite(+p[0])&&Number.isFinite(+p[1])).map(p=>[+p[0],+p[1]]);
+  if(safe.length<2)return res.status(400).json({error:"Bitte zuerst eine Route berechnen."});
+
   const defs={
-   attraction:{filters:['["tourism"="attraction"]','["historic"]','["heritage"]'],category:"Sehenswürdigkeit"},
+   attraction:{filters:['["tourism"="attraction"]','["historic"="monument"]','["historic"="memorial"]','["heritage"]'],category:"Sehenswürdigkeit"},
    museum:{filters:['["tourism"="museum"]'],category:"Museum"},
    viewpoint:{filters:['["tourism"="viewpoint"]'],category:"Aussichtspunkt"},
    art:{filters:['["tourism"="artwork"]','["tourism"="gallery"]','["amenity"="arts_centre"]'],category:"Kunst & Kultur"},
    landscape:{filters:['["natural"="peak"]','["natural"="waterfall"]','["natural"="cave_entrance"]','["natural"="rock"]'],category:"Landschaft & Natur"},
-   architecture:{filters:['["historic"]','["man_made"="tower"]','["heritage"]'],category:"Bauwerk & Geschichte"}
+   architecture:{filters:['["historic"="castle"]','["historic"="ruins"]','["historic"="archaeological_site"]','["man_made"="tower"]','["heritage"]'],category:"Bauwerk & Geschichte"}
   };
   const selected=type==="brown"?[defs.attraction,defs.museum,defs.viewpoint,defs.art,defs.landscape,defs.architecture]:[defs[type]||defs.attraction];
-  const poly=safe.map(p=>`${p[0]},${p[1]}`).join(",");const parts=[];
-  for(const def of selected)for(const f of def.filters){parts.push(`node${f}(around:${distance},${poly});way${f}(around:${distance},${poly});relation${f}(around:${distance},${poly});`)}
-  const q=`[out:json][timeout:40];(${parts.join("")});out center tags 180;`;
-  const r=await fetch("https://overpass-api.de/api/interpreter",{method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded","User-Agent":"Urlaubsplaner/5.6"},body:"data="+encodeURIComponent(q)});if(!r.ok)throw Error(`Overpass ${r.status}`);const d=await r.json();
-  const rad=x=>x*Math.PI/180,hav=(a,b,c,d)=>{const R=6371000,da=rad(c-a),db=rad(d-b),A=Math.sin(da/2)**2+Math.cos(rad(a))*Math.cos(rad(c))*Math.sin(db/2)**2;return 2*R*Math.asin(Math.sqrt(A))};
+  const rad=x=>x*Math.PI/180;
+  const hav=(a,b,c,d)=>{const R=6371000,da=rad(c-a),db=rad(d-b),A=Math.sin(da/2)**2+Math.cos(rad(a))*Math.cos(rad(c))*Math.sin(db/2)**2;return 2*R*Math.asin(Math.sqrt(A))};
   const distRoute=(la,lo)=>Math.min(...safe.map(p=>hav(la,lo,p[0],p[1])));
   const classify=t=>{if(t?.tourism==="museum")return "Museum";if(t?.tourism==="viewpoint")return "Aussichtspunkt";if(t?.tourism==="gallery"||t?.tourism==="artwork"||t?.amenity==="arts_centre")return "Kunst & Kultur";if(["peak","waterfall","cave_entrance","rock"].includes(t?.natural))return "Landschaft & Natur";if(t?.historic||t?.heritage||t?.man_made==="tower")return "Bauwerk & Geschichte";return "Sehenswürdigkeit"};
-  const seen=new Set();const results=(d.elements||[]).map(x=>{const lat=x.lat??x.center?.lat,lon=x.lon??x.center?.lon,t=x.tags||{},category=classify(t),name=t["name:de"]||t.name||t["official_name"]||"";return {name,lat,lon,category,distance_to_route_m:Number.isFinite(lat)&&Number.isFinite(lon)?distRoute(lat,lon):Infinity,description:t["description:de"]||t.description||t.wikipedia||t.historic||t.natural||""}}).filter(x=>x.name&&Number.isFinite(x.lat)&&Number.isFinite(x.lon)&&x.distance_to_route_m<=distance*1.35).filter(x=>{const k=`${x.name}|${x.lat.toFixed(4)}|${x.lon.toFixed(4)}`;if(seen.has(k))return false;seen.add(k);return true}).sort((a,b)=>a.distance_to_route_m-b.distance_to_route_m).slice(0,limit);
-  res.json({results});
- }catch(e){res.status(500).json({error:e.message})}
+
+  // 5.7: lange Routen abschnittsweise abfragen. So muss Overpass nicht mehr
+  // einen riesigen Korridor in einer einzigen Anfrage berechnen.
+  const chunkSize=5, chunks=[];
+  for(let i=0;i<safe.length;i+=chunkSize)chunks.push(safe.slice(i,i+chunkSize));
+  const endpoints=["https://overpass-api.de/api/interpreter","https://overpass.kumi.systems/api/interpreter"];
+  const all=[];let completed=0,retries=0;
+  async function queryChunk(chunk){
+   const parts=[];
+   for(const p of chunk)for(const def of selected)for(const f of def.filters){
+    parts.push(`node${f}(around:${distance},${p[0]},${p[1]});way${f}(around:${distance},${p[0]},${p[1]});relation${f}(around:${distance},${p[0]},${p[1]});`);
+   }
+   const q=`[out:json][timeout:18];(${parts.join("")});out center tags 80;`;
+   let lastErr=null;
+   for(let attempt=0;attempt<endpoints.length;attempt++){
+    const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),22000);
+    try{
+     const r=await fetch(endpoints[attempt],{method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded","User-Agent":"Urlaubsplaner/5.7"},body:"data="+encodeURIComponent(q),signal:controller.signal});
+     clearTimeout(timer);
+     if(!r.ok)throw Error(`Overpass ${r.status}`);
+     return await r.json();
+    }catch(e){clearTimeout(timer);lastErr=e;if(attempt===0)retries++;}
+   }
+   throw lastErr||Error("Overpass nicht erreichbar");
+  }
+  for(const chunk of chunks){
+   try{const d=await queryChunk(chunk);all.push(...(d.elements||[]));completed++;}
+   catch(e){/* Teilfehler überspringen; andere Abschnitte bleiben nutzbar */}
+  }
+  if(!completed)return res.status(503).json({error:"Der Sehenswürdigkeiten-Dienst ist momentan ausgelastet. Bitte in einer Minute erneut versuchen."});
+
+  const seen=new Set();
+  const results=all.map(x=>{const lat=x.lat??x.center?.lat,lon=x.lon??x.center?.lon,t=x.tags||{},category=classify(t),name=t["name:de"]||t.name||t.official_name||"";return {name,lat,lon,category,distance_to_route_m:Number.isFinite(lat)&&Number.isFinite(lon)?distRoute(lat,lon):Infinity,description:t["description:de"]||t.description||t.wikipedia||t.historic||t.natural||""}})
+   .filter(x=>x.name&&Number.isFinite(x.lat)&&Number.isFinite(x.lon)&&x.distance_to_route_m<=distance*1.35)
+   .filter(x=>{const k=`${x.name.toLowerCase()}|${x.lat.toFixed(4)}|${x.lon.toFixed(4)}`;if(seen.has(k))return false;seen.add(k);return true})
+   .sort((a,b)=>a.distance_to_route_m-b.distance_to_route_m).slice(0,limit);
+  res.json({results,meta:{sections:chunks.length,completed,retries,partial:completed<chunks.length}});
+ }catch(e){res.status(500).json({error:e.name==="AbortError"?"Zeitüberschreitung beim Sehenswürdigkeiten-Dienst.":e.message})}
 });
 
 app.get("/api/weather", async (req,res)=>{
@@ -141,4 +174,4 @@ app.post("/api/plan", async (req,res)=>{
 });
 
 const port=process.env.PORT||3000;
-app.listen(port,()=>console.log(`Urlaubsplaner 5.1 läuft auf http://localhost:${port}`));
+app.listen(port,()=>console.log(`Urlaubsplaner 5.7 läuft auf http://localhost:${port}`));

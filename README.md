@@ -1,3 +1,14 @@
+# Urlaubsplaner 5.9 – Mein Reiseassistent
+
+Neu in 5.9:
+- „Mach meinen Tag“: lokale Tagesideen aus Reise, POI-Merkliste und Reisegeschmack
+- „Plan B“: Alternativen bei schlechtem Wetter, zu langen Fahrtagen oder Ausfällen, ohne Plan A automatisch zu überschreiben
+- Persönlicher Reisegeschmack mit Gewichtung für Natur, Aussicht, Geschichte, Museen, Kunst, Architektur, Altstädte und Stellplätze
+- POIs können nach dem persönlichen Profil sortiert werden
+- Das Profil liegt in den bestehenden Zusatzdaten und wird mit der normalen Cloud-Sicherung mitgenommen
+
+Alle Funktionen aus 5.8 bleiben erhalten.
+
 # Urlaubsplaner 5.1 – Gemeinsame Reisen
 
 Zusätzlich zu Benutzerkonto und Cloud-Sicherung aus 5.0 können Reisen jetzt geteilt werden.
@@ -30,7 +41,7 @@ Editoren dürfen aktualisieren, Viewer nur lesen.
 Der Supabase Secret-/Service-Role-Key wird nicht im Browser verwendet.
 
 
-## Version 5.6
+## Version 5.8
 - Tagesplanung mit Plausibilitätscheck für Etappen, Kilometer, Ruhetage und Übernachtungen
 - Etappen können optional ab dem Reise-Startdatum fortlaufend datiert werden
 - erweitertes Reise-Cockpit
