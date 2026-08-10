@@ -25,7 +25,7 @@ app.get("/api/config", (req, res) => {
   });
 });
 
-app.get("/health",(req,res)=>res.json({ok:true,version:"5.7"}));
+app.get("/health",(req,res)=>res.json({ok:true,version:"5.9.2"}));
 
 app.get("/api/geocode", async (req,res)=>{
   try{
@@ -38,6 +38,18 @@ app.get("/api/geocode", async (req,res)=>{
     const data=await r.json();
     res.json({results:data.map(x=>({name:x.name||"",display_name:x.display_name,lat:+x.lat,lon:+x.lon,type:x.type,category:x.category}))});
   }catch(e){res.status(500).json({error:e.message})}
+});
+
+app.get("/api/what3words", async (req,res)=>{
+ try{
+  const words=String(req.query.words||"").trim().replace(/^\/\/\//,"");
+  if(!words)return res.status(400).json({error:"what3words-Adresse fehlt"});
+  const key=String(process.env.WHAT3WORDS_API_KEY||"").trim();
+  if(!key)return res.status(503).json({error:"WHAT3WORDS_API_KEY ist auf dem Server noch nicht eingerichtet."});
+  const u=new URL("https://api.what3words.com/v3/convert-to-coordinates");u.searchParams.set("words",words);u.searchParams.set("key",key);u.searchParams.set("format","json");
+  const r=await fetch(u);const d=await r.json();if(!r.ok)throw Error(d?.error?.message||`what3words ${r.status}`);
+  res.json({words:d.words,lat:+d.coordinates.lat,lon:+d.coordinates.lng,country:d.country||"",nearestPlace:d.nearestPlace||"",map:d.map||""});
+ }catch(e){res.status(500).json({error:e.message})}
 });
 
 app.get("/api/route", async (req,res)=>{
@@ -124,7 +136,7 @@ app.post("/api/route-pois", async (req,res)=>{
    for(let attempt=0;attempt<endpoints.length;attempt++){
     const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),22000);
     try{
-     const r=await fetch(endpoints[attempt],{method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded","User-Agent":"Urlaubsplaner/5.7"},body:"data="+encodeURIComponent(q),signal:controller.signal});
+     const r=await fetch(endpoints[attempt],{method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded","User-Agent":"Urlaubsplaner/5.9.1"},body:"data="+encodeURIComponent(q),signal:controller.signal});
      clearTimeout(timer);
      if(!r.ok)throw Error(`Overpass ${r.status}`);
      return await r.json();
@@ -139,12 +151,22 @@ app.post("/api/route-pois", async (req,res)=>{
   if(!completed)return res.status(503).json({error:"Der Sehenswürdigkeiten-Dienst ist momentan ausgelastet. Bitte in einer Minute erneut versuchen."});
 
   const seen=new Set();
-  const results=all.map(x=>{const lat=x.lat??x.center?.lat,lon=x.lon??x.center?.lon,t=x.tags||{},category=classify(t),name=t["name:de"]||t.name||t.official_name||"";return {name,lat,lon,category,distance_to_route_m:Number.isFinite(lat)&&Number.isFinite(lon)?distRoute(lat,lon):Infinity,description:t["description:de"]||t.description||t.wikipedia||t.historic||t.natural||""}})
+  const results=all.map(x=>{const lat=x.lat??x.center?.lat,lon=x.lon??x.center?.lon,t=x.tags||{},category=classify(t),name=t["name:de"]||t.name||t.official_name||"";const wiki=t.wikipedia?`https://${String(t.wikipedia).includes(":")?String(t.wikipedia).split(":")[0]:"de"}.wikipedia.org/wiki/${encodeURIComponent(String(t.wikipedia).includes(":")?String(t.wikipedia).split(":").slice(1).join(":"):String(t.wikipedia)).replace(/%20/g,"_")}`:"";const website=t.website||t["contact:website"]||t.url||"";return {name,lat,lon,category,distance_to_route_m:Number.isFinite(lat)&&Number.isFinite(lon)?distRoute(lat,lon):Infinity,description:t["description:de"]||t.description||t.wikipedia||t.historic||t.natural||"",website,wikipedia:wiki}})
    .filter(x=>x.name&&Number.isFinite(x.lat)&&Number.isFinite(x.lon)&&x.distance_to_route_m<=distance*1.35)
    .filter(x=>{const k=`${x.name.toLowerCase()}|${x.lat.toFixed(4)}|${x.lon.toFixed(4)}`;if(seen.has(k))return false;seen.add(k);return true})
    .sort((a,b)=>a.distance_to_route_m-b.distance_to_route_m).slice(0,limit);
   res.json({results,meta:{sections:chunks.length,completed,retries,partial:completed<chunks.length}});
  }catch(e){res.status(500).json({error:e.name==="AbortError"?"Zeitüberschreitung beim Sehenswürdigkeiten-Dienst.":e.message})}
+});
+
+app.post("/api/poi-detour", async (req,res)=>{
+ try{
+  const {from,poi,to}=req.body||{};const valid=p=>Array.isArray(p)&&p.length===2&&Number.isFinite(+p[0])&&Number.isFinite(+p[1]);
+  if(!valid(from)||!valid(poi)||!valid(to))return res.status(400).json({error:"Koordinaten für Abstecher fehlen"});
+  async function route(points){const coords=points.map(p=>`${+p[1]},${+p[0]}`).join(";");const u=`https://router.project-osrm.org/route/v1/driving/${coords}?overview=false&steps=false`;const r=await fetch(u);if(!r.ok)throw Error(`OSRM ${r.status}`);const d=await r.json();if(d.code!=="Ok"||!d.routes?.length)throw Error("Keine Straßenroute gefunden");return d.routes[0]}
+  const direct=await route([from,to]),via=await route([from,poi,to]);const legs=via.legs||[];
+  res.json({direct_km:direct.distance/1000,direct_minutes:direct.duration/60,via_km:via.distance/1000,via_minutes:via.duration/60,to_poi_km:(legs[0]?.distance||0)/1000,to_poi_minutes:(legs[0]?.duration||0)/60,back_to_route_km:(legs[1]?.distance||0)/1000,back_to_route_minutes:(legs[1]?.duration||0)/60,extra_km:Math.max(0,(via.distance-direct.distance)/1000),extra_minutes:Math.max(0,(via.duration-direct.duration)/60)});
+ }catch(e){res.status(500).json({error:e.message})}
 });
 
 app.get("/api/weather", async (req,res)=>{
@@ -174,4 +196,4 @@ app.post("/api/plan", async (req,res)=>{
 });
 
 const port=process.env.PORT||3000;
-app.listen(port,()=>console.log(`Urlaubsplaner 5.7 läuft auf http://localhost:${port}`));
+app.listen(port,()=>console.log(`Urlaubsplaner 5.9.2 läuft auf http://localhost:${port}`));

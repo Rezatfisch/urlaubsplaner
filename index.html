@@ -77,11 +77,11 @@
   </style>
 </head>
 <body>
-<header><div><div class="title" onclick="showArea('home')" role="button" tabindex="0" title="Zur Übersicht"><img class="app-logo" src="icon-192.png" alt="">Urlaubsplaner</div><div class="small">Deine Reise. Perfekt geplant.</div></div><div class="head-actions"><button id="installApp" class="primary" type="button" title="Urlaubsplaner als App installieren">⬇ App installieren</button><div class="badge">Version 5.9</div></div></header>
+<header><div><div class="title" onclick="showArea('home')" role="button" tabindex="0" title="Zur Übersicht"><img class="app-logo" src="icon-192.png" alt="">Urlaubsplaner</div><div class="small">Deine Reise. Perfekt geplant.</div></div><div class="head-actions"><button id="installApp" class="primary" type="button" title="Urlaubsplaner als App installieren">⬇ App installieren</button><div class="badge">Version 5.9.2</div></div></header>
 
 <main><div class="grid">
 <section id="homeHero" class="card home-hero">
-  <div class="hero-top"><div><div class="hero-title" id="homeTripTitle">Bereit für die nächste Reise?</div><div class="small" id="homeTripMeta">Lege eine Reise an oder wähle eine vorhandene Reise.</div></div><div class="hero-pill">Version 5.9</div></div>
+  <div class="hero-top"><div><div class="hero-title" id="homeTripTitle">Bereit für die nächste Reise?</div><div class="small" id="homeTripMeta">Lege eine Reise an oder wähle eine vorhandene Reise.</div></div><div class="hero-pill">Version 5.9.2</div></div>
   <div class="hero-kpis"><div class="hero-kpi"><b id="homeDays">–</b><span>Tage</span></div><div class="hero-kpi"><b id="homeKm">–</b><span>Strecke</span></div><div class="hero-kpi"><b id="homeStops">–</b><span>Stopps</span></div><div class="hero-kpi"><b id="homeCosts">–</b><span>Etappenkosten</span></div></div>
 </section>
 <section id="homeDashboard" class="card dash-wrap">
@@ -94,7 +94,7 @@
     <button class="nav-tile" onclick="showArea('kosten')"><span class="ico">💶</span><b>Kosten & Budget</b><span>Diesel, Zahlungen & Tageskosten</span></button>
     <button class="nav-tile" onclick="showArea('buchungen')"><span class="ico">🏕️</span><b>Übernachten & Buchungen</b><span>Stellplätze, Hotels & Reservierungen</span></button>
     <button class="nav-tile" onclick="showArea('vorbereitung')"><span class="ico">📋</span><b>Reisevorbereitung</b><span>Packliste, Dokumente & Ländercheck</span></button>
-    <button class="nav-tile" onclick="showArea('entdecken')"><span class="ico">🧭</span><b>Entdecken</b><span>POIs, braune Schilder & Merkliste</span></button><button class="nav-tile" onclick="showArea('unterwegs')"><span class="ico">🌦️</span><b>Unterwegs</b><span>Wetter, Maut, Fähren & Ruhetage</span></button>
+    <button class="nav-tile" onclick="showArea('ziel')"><span class="ico">📍</span><b>Ziel hinzufügen</b><span>Adresse, Koordinaten, what3words oder Karte</span></button><button class="nav-tile" onclick="showArea('entdecken')"><span class="ico">🧭</span><b>Entdecken</b><span>POIs, braune Schilder & Merkliste</span></button><button class="nav-tile" onclick="showArea('unterwegs')"><span class="ico">🌦️</span><b>Unterwegs</b><span>Wetter, Maut, Fähren & Ruhetage</span></button>
     <button class="nav-tile" onclick="showArea('gemeinsam')"><span class="ico">👥</span><b>Gemeinsam reisen</b><span>Cloud, Synchronisierung & Freigaben</span></button>
     <button class="nav-tile" onclick="showArea('journal')"><span class="ico">📖</span><b>Reisejournal</b><span>Erlebnisse, Favoriten & Fotomotive</span></button>
     <button class="nav-tile" onclick="showArea('export')"><span class="ico">💾</span><b>Sicherung & Export</b><span>Backup, GPX, Kalender, Druck & Teilen</span></button>
@@ -218,6 +218,21 @@
  <button class="primary" onclick="searchNearby()">🔎 POIs in der Umgebung suchen</button><div id="nearResults"></div>
 </section>
 
+
+<section class="card span12" data-area="ziel">
+ <h2>📍 Universelles Ziel hinzufügen</h2>
+ <div class="small">Adresse/Ort, GPS-Koordinaten, what3words oder direkt auf der Karte wählen. Danach bestimmst du selbst, was das Ziel ist.</div>
+ <div class="row3" style="margin-top:8px"><select id="targetInputMode"><option value="address">🏠 Adresse / Ort</option><option value="coords">🧭 Koordinaten</option><option value="w3w">/// what3words</option></select><input id="targetInput" placeholder="z. B. Schloss Neuschwanstein"><button class="primary" onclick="resolveUniversalTarget()">Ziel finden</button></div>
+ <div class="small">Koordinaten: <b>Breitengrad, Längengrad</b>, z. B. 49.03, 11.03. Für what3words ist ein WHAT3WORDS_API_KEY auf Render erforderlich.</div>
+ <div id="targetSearchResults"></div>
+ <div id="targetMap" style="height:360px;border-radius:14px;margin-top:9px;background:#e8edf2"></div>
+ <div id="targetPicked" class="routebox">Noch kein Ziel gewählt. Du kannst auch direkt auf die Karte tippen.</div>
+ <div class="row3"><input id="targetName" placeholder="Name des Ziels"><select id="targetType"><option>Sehenswürdigkeit</option><option>POI</option><option>Pause / Stopp</option><option>Essen / Restaurant</option><option>Café</option><option>Einkaufen</option><option>Tanken</option><option>Stellplatz</option><option>Campingplatz</option><option>Hotel</option><option>Natur / Aussicht</option><option>Museum / Kultur</option><option>Fähre</option><option>Ver- / Entsorgung</option><option>Besuch / Freunde</option><option>Sonstiges</option></select><input id="targetCustomType" placeholder="eigener Typ (optional)"></div>
+ <div class="row3"><input id="targetStay" type="number" min="0" step="15" value="0" placeholder="Aufenthalt Min."><select id="targetInsertAfter"></select><button onclick="calcUniversalDetour()">🚐 Abstecher berechnen</button></div>
+ <textarea id="targetNote" rows="2" placeholder="Notiz, Reservierung, Öffnungszeiten …"></textarea>
+ <div id="targetDetour" class="routebox">Wähle ein Ziel und die Stelle in der Route.</div>
+ <div class="toolbar"><button class="primary" onclick="insertUniversalTarget()">＋ In Route einfügen & neu berechnen</button><button onclick="clearUniversalTarget()">Zurücksetzen</button></div>
+</section>
 <section class="card span12" data-area="entdecken">
  <h2>🟫 Sehenswürdigkeiten entlang der Route</h2>
  <div class="small">Wie die braunen touristischen Hinweistafeln an der Autobahn: Finde besondere Ziele direkt an deiner geplanten Fahrstrecke. Die Suche zeigt touristisch interessante Orte aus OpenStreetMap; sie bedeutet nicht, dass dort tatsächlich ein braunes Straßenschild steht.</div>
@@ -685,6 +700,7 @@ const AREA_INFO={
  kosten:["💶 Kosten & Budget","Reisekosten, Zahlungen, Budget und Tageskosten"],
  buchungen:["🏕️ Übernachten & Buchungen","Buchungen und Übernachtungsplanung"],
  vorbereitung:["📋 Reisevorbereitung","Packen, Dokumente, Reisende und Checklisten"],
+ ziel:["📍 Ziel hinzufügen","Adresse, Koordinaten, what3words oder Karte – danach Zielart und Abstecher festlegen"],
  entdecken:["🧭 Entdecken & Reise gestalten","POIs entlang der Route finden, merken und passend einfügen"],
  unterwegs:["🌦️ Unterwegs","Wetter, Umgebung, Maut, Fähren und Fahrtage"],
  gemeinsam:["👥 Gemeinsam reisen","Persönliche Cloud-Sicherung und gemeinsame Reisen"],
@@ -713,7 +729,7 @@ function detectArea(section){
  if(h.includes("sicherung")||h.includes("gpx-export")||h.includes("reise teilen")||h.includes("kalenderexport")||h.includes("druckansicht"))return "export";
  return "reisen";
 }
-function showArea(area){
+function showArea(area,fromHistory=false){
  const home=area==="home";
  document.getElementById("homeHero")?.classList.toggle("app-hidden",!home);
  document.getElementById("homeDashboard")?.classList.toggle("app-hidden",!home);
@@ -731,7 +747,10 @@ function showArea(area){
  if(area==="assistent")setTimeout(renderAssistant59,80);
  if(area==="begleiter")setTimeout(refreshCompanion,80);
  localStorage.setItem("urlaubsplaner_area_v54",area);
+ if(!fromHistory){const cur=history.state?.appArea;if(cur!==area)history.pushState({appArea:area},"",location.href);}
+ if(area==="ziel")setTimeout(()=>{initTargetMap59();refreshTargetInsert59();try{targetMap59.invalidateSize()}catch{}},180);
 }
+window.addEventListener("popstate",e=>{const a=e.state?.appArea||"home";showArea(a,true);});
 function updateHomeSummary(){
  const t=getSelected?.();
  const title=document.getElementById("homeTripTitle"),meta=document.getElementById("homeTripMeta");
@@ -781,7 +800,17 @@ function refreshCompanion(){
  if(!cur){box.innerHTML=`<div class="today-empty"><b>${esc(t.title)}</b><br>Für heute (${today}) ist noch keine Etappe eingetragen.</div>`;return}
  box.innerHTML=`<div class="today-grid"><div class="today-kpi"><b>Tag ${days}</b>Reisetag</div><div class="today-kpi"><b>${esc(cur.place)}</b>heutiger Stopp</div><div class="today-kpi"><b>${next?esc(next.place):"Reiseziel erreicht"}</b>nächstes Ziel</div><div class="today-kpi"><b>${leg?Math.round(leg.distance_km)+" km":"–"}</b>${leg?formatHours(leg.duration_hours):"Fahrt"}</div></div><div class="today-card today-now"><div class="today-main">📍 ${esc(cur.place)}</div><div class="small">${esc(cur.type||"Etappe")} · ${esc(cur.date||"Datum offen")}</div>${cur.note?`<div style="margin-top:7px">${esc(cur.note)}</div>`:""}<div class="today-actions" style="margin-top:8px">${Number.isFinite(cur.lat)?`<button onclick="companionWeatherStop(getSelected().stops[${idx}])">🌦 Wetter hier</button>`:""}<button onclick="showArea('entdecken')">🧭 Umgebung entdecken</button></div></div>${next?`<div class="today-card"><b>➡️ Weiter nach ${esc(next.place)}</b><div class="small">${esc(next.date||"Datum offen")} · ${esc(next.type||"Etappe")}</div>${leg?`<div style="margin-top:6px"><b>${Math.round(leg.distance_km)} km</b> · ${formatHours(leg.duration_hours)}</div>`:"<div class=\"small\">Route für diesen Abschnitt noch nicht berechnet.</div>"}</div>`:""}<div class="today-card"><b>⛽ Fahrzeug & Reichweite</b><div>${range?`Sichere Reichweite mit 15 % Reserve: <b>${Math.round(range)} km</b>`:"Fahrzeugprofil für Reichweitenanzeige ergänzen."}</div></div><div class="today-card"><b>⏰ Nächste Erinnerungen</b>${rems.length?rems.slice(0,3).map(x=>`<div class="docitem"><span>${esc(x.text)}<br><span class="small">${esc(x.date||"")}</span></span></div>`).join(""):"<div class=\"small\">Keine anstehenden Erinnerungen.</div>"}${bookings.length?`<div class="compact-hint">🏕 Heute: ${bookings.map(x=>esc(x.name)).join(", ")}</div>`:""}</div>`;
 }
-window.addEventListener("load",()=>{migrate();initMap();loadVehicle();render();updateHomeSummary();showArea("home")});
+
+let targetMap59=null,targetMarker59=null,targetChoice59=null,targetDetour59=null;
+function initTargetMap59(){if(targetMap59)return;const el=$("targetMap");if(!el)return;targetMap59=L.map(el).setView([51.1,10.4],5);L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"© OpenStreetMap"}).addTo(targetMap59);targetMap59.on("click",e=>pickUniversalTarget(e.latlng.lat,e.latlng.lng,"Gewählter Kartenpunkt","Karte"));}
+function refreshTargetInsert59(){const t=getSelected(),sel=$("targetInsertAfter");if(!sel)return;sel.innerHTML=(t?.stops||[]).map((x,i)=>`<option value="${i}">nach ${i+1}. ${esc(x.place)}</option>`).join("");}
+function pickUniversalTarget(lat,lon,name,source){targetChoice59={lat:+lat,lon:+lon,name:name||"Neues Ziel",source};if(targetMarker59)targetMap59.removeLayer(targetMarker59);targetMarker59=L.marker([lat,lon]).addTo(targetMap59);targetMap59.setView([lat,lon],14);$("targetName").value=name||"";$("targetPicked").innerHTML=`<b>📍 ${esc(name||"Gewähltes Ziel")}</b><br>${(+lat).toFixed(6)}, ${(+lon).toFixed(6)} · ${esc(source||"")}`;targetDetour59=null;$("targetDetour").textContent="Ziel gewählt. Jetzt Einfügeposition festlegen und Abstecher berechnen.";}
+async function resolveUniversalTarget(){initTargetMap59();const mode=$("targetInputMode").value,q=$("targetInput").value.trim();if(!q)return alert("Bitte Ziel eingeben.");$("targetSearchResults").innerHTML='<div class="small">Suche …</div>';try{if(mode==="coords"){const m=q.replace(/;/g,",").split(",").map(x=>+x.trim());if(m.length<2||!Number.isFinite(m[0])||!Number.isFinite(m[1]))throw Error("Koordinaten bitte als Breitengrad, Längengrad eingeben.");pickUniversalTarget(m[0],m[1],"GPS-Ziel","Koordinaten");$("targetSearchResults").innerHTML="";return}if(mode==="w3w"){const r=await fetch("/api/what3words?words="+encodeURIComponent(q)),j=await r.json();if(!r.ok)throw Error(j.error||"what3words nicht gefunden");pickUniversalTarget(j.lat,j.lon,"///"+j.words,"what3words");$("targetSearchResults").innerHTML=`<div class="searchresult"><b>///${esc(j.words)}</b><div class="small">${esc(j.nearestPlace||"")} · ${esc(j.country||"")}</div></div>`;return}const r=await fetch("/api/geocode?q="+encodeURIComponent(q)),j=await r.json();if(!r.ok)throw Error(j.error||"Suche fehlgeschlagen");$("targetSearchResults").innerHTML=(j.results||[]).map((x,i)=>`<div class="searchresult" onclick='pickUniversalTarget(${x.lat},${x.lon},${JSON.stringify(x.name||x.display_name.split(",")[0])},"Adresse")'><b>${esc(x.name||x.display_name.split(",")[0])}</b><div class="small">${esc(x.display_name)}</div></div>`).join("")||'<div class="small">Kein Treffer.</div>'}catch(e){$("targetSearchResults").innerHTML=`<div class="alert">${esc(e.message)}</div>`}}
+async function calcUniversalDetour(){const t=getSelected(),idx=+$("targetInsertAfter").value;if(!t||!targetChoice59)return alert("Bitte Reise und Ziel wählen.");const from=t.stops[idx],to=t.stops[idx+1];if(!from||!to||!Number.isFinite(from.lat)||!Number.isFinite(to.lat))return alert("Für die Abstecherberechnung brauchen die Etappe davor und danach Koordinaten.");$("targetDetour").textContent="Abstecher wird über die Straße berechnet …";try{const r=await fetch("/api/poi-detour",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({from:[from.lat,from.lon],poi:[targetChoice59.lat,targetChoice59.lon],to:[to.lat,to.lon]})}),j=await r.json();if(!r.ok)throw Error(j.error);targetDetour59=j;const stay=+$("targetStay").value||0;$("targetDetour").innerHTML=`<b>🚐 Tatsächlicher Abstecher</b><br>${esc(from.place)} → Ziel: <b>${j.to_poi_km.toFixed(1)} km · ${Math.round(j.to_poi_minutes)} Min.</b><br>Ziel → ${esc(to.place)}: <b>${j.back_to_route_km.toFixed(1)} km · ${Math.round(j.back_to_route_minutes)} Min.</b><br>Zusätzlich gegenüber direkter Route: <b>+${j.extra_km.toFixed(1)} km · +${Math.round(j.extra_minutes)} Min.</b>${stay?`<br>Aufenthalt: <b>${stay} Min.</b> · gesamter Zusatzzeitbedarf ca. <b>${Math.round(j.extra_minutes+stay)} Min.</b>`:""}`;}catch(e){$("targetDetour").textContent="Abstecher nicht berechenbar: "+e.message}}
+async function insertUniversalTarget(){const a=load(),t=a.find(x=>x.id===selectedId),idx=+$("targetInsertAfter").value;if(!t||!targetChoice59)return alert("Bitte Reise und Ziel wählen.");const typ=$("targetCustomType").value.trim()||$("targetType").value,name=$("targetName").value.trim()||targetChoice59.name||"Neues Ziel";const st={id:Date.now(),date:"",place:name,type:typ,lat:targetChoice59.lat,lon:targetChoice59.lon,note:$("targetNote").value.trim(),nightCost:0,tollCost:0,otherCost:0,stayMinutes:+$("targetStay").value||0,source:targetChoice59.source||"manuell"};t.stops.splice(Math.min(t.stops.length,idx+1),0,st);save(a);clearUniversalTarget();showArea("route");setTimeout(()=>calculateRoute(),250)}
+function clearUniversalTarget(){targetChoice59=targetDetour59=null;if(targetMarker59&&targetMap59){targetMap59.removeLayer(targetMarker59);targetMarker59=null}for(const id of ["targetInput","targetName","targetCustomType","targetNote"])if($(id))$(id).value="";if($("targetStay"))$("targetStay").value=0;if($("targetSearchResults"))$("targetSearchResults").innerHTML="";if($("targetPicked"))$("targetPicked").textContent="Noch kein Ziel gewählt. Du kannst auch direkt auf die Karte tippen.";if($("targetDetour"))$("targetDetour").textContent="Wähle ein Ziel und die Stelle in der Route.";}
+
+window.addEventListener("load",()=>{migrate();initMap();loadVehicle();render();updateHomeSummary();showArea("home",true)});
 </script>
 
 <script type="module">
