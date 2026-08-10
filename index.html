@@ -7,7 +7,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <link rel="apple-touch-icon" href="icon-192.png">
-  <title>Urlaubsplaner 5.4</title>
+  <title>Urlaubsplaner 5.6</title>
   <link rel="manifest" href="manifest.json">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <style>
@@ -68,19 +68,19 @@
     .nav-tile .ico{font-size:1.65rem;display:block;margin-bottom:8px}.nav-tile b{display:block;font-size:.95rem}.nav-tile span{display:block;color:var(--muted);font-size:.76rem;line-height:1.25;margin-top:4px;font-weight:500}
     #areaHeader{grid-column:1/-1;padding:10px 12px;position:sticky;top:76px;z-index:900}.area-bar{display:flex;gap:9px;align-items:center}.area-bar button{width:auto;margin:0}.area-title{font-weight:900;font-size:1.05rem}.area-sub{font-size:.78rem;color:var(--muted)}
     .quickbar{grid-column:1/-1;display:flex;gap:7px;overflow:auto;padding:2px 0 4px}.quickbar button{width:auto;white-space:nowrap;margin:0;padding:8px 11px;background:#fff}
-    /* 5.4 Tagesplanung & mobile Schnellnavigation */
-    .planner54{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:10px 0}.planner54 .metric{text-align:center}.planner-actions{display:flex;gap:7px;flex-wrap:wrap;margin:8px 0}.planner-actions button{width:auto;margin:0}.dayplan-row{display:grid;grid-template-columns:70px 1fr auto;gap:8px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line)}.dayplan-row:last-child{border-bottom:0}.day-badge{font-weight:850;background:var(--soft);border-radius:10px;padding:7px;text-align:center}.dayplan-row .warn{color:#a65a00;font-weight:800}.dayplan-row .oktxt{color:#187a3a;font-weight:800}.bottom-nav{display:none}.ai-offline{background:#fff6df;border:1px solid #ead39b;border-radius:11px;padding:10px;margin-top:7px}.ai-offline b{display:block;margin-bottom:3px}.compact-hint{padding:8px 10px;border-radius:10px;background:var(--soft);font-size:.82rem;color:var(--muted);margin-top:8px}
+    /* 5.5 Routen-, Etappen- und POI-Planung */
+    .planner54{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:10px 0}.planner54 .metric{text-align:center}.planner-actions{display:flex;gap:7px;flex-wrap:wrap;margin:8px 0}.planner-actions button{width:auto;margin:0}.dayplan-row{display:grid;grid-template-columns:70px 1fr auto;gap:8px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line)}.dayplan-row:last-child{border-bottom:0}.day-badge{font-weight:850;background:var(--soft);border-radius:10px;padding:7px;text-align:center}.dayplan-row .warn{color:#a65a00;font-weight:800}.dayplan-row .oktxt{color:#187a3a;font-weight:800}.bottom-nav{display:none}.ai-offline{background:#fff6df;border:1px solid #ead39b;border-radius:11px;padding:10px;margin-top:7px}.ai-offline b{display:block;margin-bottom:3px}.compact-hint{padding:8px 10px;border-radius:10px;background:var(--soft);font-size:.82rem;color:var(--muted);margin-top:8px}.poi55{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:start}.poi55 .poi-meta{font-size:.78rem;color:var(--muted);margin-top:3px}.poi55 button{width:auto;margin:0}.poi55 .poi-cat{display:inline-block;background:var(--soft);border-radius:999px;padding:3px 7px;font-size:.72rem;margin-top:5px}
     @media(max-width:900px){body{padding-bottom:70px}.span4,.span5,.span7,.span8,.span12{grid-column:1/-1}.row,.row3,.routeTotals{grid-template-columns:1fr}#map{height:390px}.stop{grid-template-columns:34px 1fr}.stopactions{grid-column:2}.tile-grid{grid-template-columns:repeat(2,1fr)}.hero-kpis{grid-template-columns:repeat(2,1fr)}.nav-tile{min-height:110px;padding:12px}.dash-head{align-items:flex-start;flex-direction:column}.dash-head .small{text-align:left}#areaHeader{top:72px}.planner54{grid-template-columns:repeat(2,1fr)}.dayplan-row{grid-template-columns:62px 1fr}.dayplan-row>div:last-child{grid-column:2}.bottom-nav{position:fixed;display:grid;grid-template-columns:repeat(5,1fr);left:0;right:0;bottom:0;z-index:1300;background:#fff;border-top:1px solid var(--line);padding:6px 5px max(6px,env(safe-area-inset-bottom));box-shadow:0 -4px 18px rgba(15,23,42,.08)}.bottom-nav button{border:0;background:transparent;margin:0;padding:5px 2px;font-size:.69rem;border-radius:9px;color:var(--text)}.bottom-nav .ico{display:block;font-size:1.15rem;margin-bottom:1px}.quickbar{display:none!important}}
     @media(max-width:390px){.nav-tile b{font-size:.88rem}.nav-tile span{font-size:.72rem}.nav-tile{min-height:108px}}
 
   </style>
 </head>
 <body>
-<header><div><div class="title" onclick="showArea('home')" role="button" tabindex="0" title="Zur Übersicht"><img class="app-logo" src="icon-192.png" alt="">Urlaubsplaner</div><div class="small">Deine Reise. Perfekt geplant.</div></div><div class="head-actions"><button id="installApp" class="primary" type="button" title="Urlaubsplaner als App installieren">⬇ App installieren</button><div class="badge">Version 5.4</div></div></header>
+<header><div><div class="title" onclick="showArea('home')" role="button" tabindex="0" title="Zur Übersicht"><img class="app-logo" src="icon-192.png" alt="">Urlaubsplaner</div><div class="small">Deine Reise. Perfekt geplant.</div></div><div class="head-actions"><button id="installApp" class="primary" type="button" title="Urlaubsplaner als App installieren">⬇ App installieren</button><div class="badge">Version 5.6</div></div></header>
 
 <main><div class="grid">
 <section id="homeHero" class="card home-hero">
-  <div class="hero-top"><div><div class="hero-title" id="homeTripTitle">Bereit für die nächste Reise?</div><div class="small" id="homeTripMeta">Lege eine Reise an oder wähle eine vorhandene Reise.</div></div><div class="hero-pill">Version 5.4</div></div>
+  <div class="hero-top"><div><div class="hero-title" id="homeTripTitle">Bereit für die nächste Reise?</div><div class="small" id="homeTripMeta">Lege eine Reise an oder wähle eine vorhandene Reise.</div></div><div class="hero-pill">Version 5.6</div></div>
   <div class="hero-kpis"><div class="hero-kpi"><b id="homeDays">–</b><span>Tage</span></div><div class="hero-kpi"><b id="homeKm">–</b><span>Strecke</span></div><div class="hero-kpi"><b id="homeStops">–</b><span>Stopps</span></div><div class="hero-kpi"><b id="homeCosts">–</b><span>Etappenkosten</span></div></div>
 </section>
 <section id="homeDashboard" class="card dash-wrap">
@@ -167,7 +167,7 @@
 </section>
 
 <section class="card span5" data-area="route">
-  <h2>📅 Tagesplanung 5.4</h2>
+  <h2>📅 Tagesplanung 5.5</h2>
   <div class="small">Prüft die Reise nach Tagen, Fahrstrecken, Ruhetagen und Übernachtungsstopps. Deine Daten werden dabei nicht automatisch überschrieben.</div>
   <div class="row"><input id="planMaxKm" type="number" value="250" min="50" step="10" placeholder="Max. km pro Fahrtag"><input id="planRestEvery" type="number" value="5" min="2" max="10" placeholder="Ruhetag nach x Fahrtagen"></div>
   <div class="planner-actions"><button class="primary" onclick="buildDayPlan54()">Tagesplan prüfen</button><button onclick="distributeStopDates54()">Etappen ab Startdatum datieren</button></div>
@@ -210,8 +210,21 @@
 
 <section class="card span12">
  <h2>🔎 Umgebung entdecken</h2>
- <div class="row3"><select id="nearStop"></select><select id="nearType"><option value="camp_site">Campingplätze</option><option value="caravan_site">Wohnmobil-Stellplätze</option><option value="attraction">Sehenswürdigkeiten</option><option value="museum">Museen</option><option value="viewpoint">Aussichtspunkte</option></select><input id="nearRadius" type="number" value="10000" placeholder="Radius Meter"></div>
- <button class="primary" onclick="searchNearby()">In der Umgebung suchen</button><div id="nearResults"></div>
+ <div class="row3"><select id="nearStop"></select><select id="nearType"><option value="all_poi">✨ Alle POIs</option><option value="attraction">🏛 Sehenswürdigkeiten</option><option value="art">🎨 Kunst & Galerien</option><option value="landscape">🏞 Landschaft & Natur</option><option value="museum">🖼 Museen</option><option value="architecture">🏰 Bauwerke & historische Orte</option><option value="viewpoint">👁 Aussichtspunkte</option><option value="camp_site">🏕 Campingplätze</option><option value="caravan_site">🚐 Wohnmobil-Stellplätze</option></select><input id="nearRadius" type="number" value="15000" min="500" max="30000" step="500" placeholder="Radius Meter"></div>
+ <div class="small">POIs rund um eine Etappe finden – bis 30 km. Treffer können direkt als Etappe übernommen werden.</div>
+ <button class="primary" onclick="searchNearby()">🔎 POIs in der Umgebung suchen</button><div id="nearResults"></div>
+</section>
+
+<section class="card span12">
+ <h2>🟫 Sehenswürdigkeiten entlang der Route</h2>
+ <div class="small">Wie die braunen touristischen Hinweistafeln an der Autobahn: Finde besondere Ziele direkt an deiner geplanten Fahrstrecke. Die Suche zeigt touristisch interessante Orte aus OpenStreetMap; sie bedeutet nicht, dass dort tatsächlich ein braunes Straßenschild steht.</div>
+ <div class="row3" style="margin-top:8px">
+   <select id="routePoiType"><option value="brown">🟫 Highlights & braune-Schilder-Ziele</option><option value="attraction">🏛 Sehenswürdigkeiten</option><option value="art">🎨 Kunst & Galerien</option><option value="landscape">🏞 Landschaft & Natur</option><option value="museum">🖼 Museen</option><option value="architecture">🏰 Bauwerke & Geschichte</option><option value="viewpoint">👁 Aussichtspunkte</option></select>
+   <select id="routePoiDistance"><option value="5000">bis 5 km von der Route</option><option value="10000" selected>bis 10 km von der Route</option><option value="20000">bis 20 km von der Route</option></select>
+   <select id="routePoiLimit"><option value="20">20 Treffer</option><option value="40" selected>40 Treffer</option><option value="60">60 Treffer</option></select>
+ </div>
+ <div class="toolbar"><button class="primary" onclick="searchRoutePOIs()">🟫 Entlang meiner Route suchen</button></div>
+ <div id="routePoiStatus" class="small"></div><div id="routePoiResults"></div>
 </section>
 
 <section class="card span4"><h2>🎒 Packliste</h2><div class="row"><input id="packText" placeholder="z. B. Stromadapter"><button onclick="addPack()">Hinzufügen</button></div><div id="packList"></div></section>
@@ -332,7 +345,7 @@ async function calculateRoute(){
   const coords=pts.map(s=>`${s.lon},${s.lat}`).join(";");const r=await fetch("/api/route?coords="+encodeURIComponent(coords));const j=await r.json();if(!r.ok)throw new Error(j.error||"Routing fehlgeschlagen");
   lastRouteKm=j.distance_km;lastRouteHours=j.duration_hours;
   const a=load(),trip=a.find(x=>x.id===selectedId);
-  if(trip){trip.routeSummary={distanceKm:j.distance_km,durationHours:j.duration_hours,legs:j.legs||[],updatedAt:new Date().toISOString()};localStorage.setItem(KEY,JSON.stringify(a));}
+  if(trip){trip.routeSummary={distanceKm:j.distance_km,durationHours:j.duration_hours,legs:j.legs||[],geometry:j.geometry,updatedAt:new Date().toISOString()};localStorage.setItem(KEY,JSON.stringify(a));}
   if(routeLayer){map.removeLayer(routeLayer);routeLayer=null}
   routeLayer=L.geoJSON(j.geometry,{weight:5}).addTo(map);map.fitBounds(routeLayer.getBounds().pad(.12));
   $("routeInfo").innerHTML=`<b>${j.distance_km.toFixed(0)} km</b> · ca. <b>${formatHours(j.duration_hours)}</b> reine Fahrzeit<br><span class="small">Straßenroute über OSRM; tatsächliche Fahrt kann abweichen.</span>`;
@@ -500,9 +513,27 @@ async function searchNearby(){
  const t=getSelected(),st=t?.stops.find(x=>x.id===+$("nearStop").value);if(!st||!Number.isFinite(st.lat)){alert("Etappe benötigt Koordinaten.");return}
  $("nearResults").innerHTML='<div class="small">Suche …</div>';
  try{const r=await fetch(`/api/nearby?lat=${st.lat}&lon=${st.lon}&type=${encodeURIComponent($("nearType").value)}&radius=${+$("nearRadius").value||10000}`);const j=await r.json();if(!r.ok)throw new Error(j.error);
- $("nearResults").innerHTML=j.results.length?j.results.map(x=>`<div class="poi"><b>${esc(x.name)}</b><div class="small">${Math.round(x.distance_m)} m entfernt</div><button onclick='addNearby(${JSON.stringify(JSON.stringify(x))})'>Als Etappe übernehmen</button></div>`).join(""):'<div class="small">Keine Treffer.</div>'}catch(e){$("nearResults").textContent="Suche fehlgeschlagen: "+e.message}
+ $("nearResults").innerHTML=j.results.length?j.results.map(x=>`<div class="poi poi55"><div><b>${esc(x.name)}</b><div class="poi-meta">${x.distance_m>=1000?(x.distance_m/1000).toFixed(1)+" km":Math.round(x.distance_m)+" m"} entfernt${x.description?" · "+esc(x.description):""}</div><span class="poi-cat">${esc(x.category||x.stopType||"POI")}</span></div><button onclick='addNearby(${JSON.stringify(JSON.stringify(x))})'>＋ Etappe</button></div>`).join(""):'<div class="small">Keine Treffer in diesem Radius.</div>'}catch(e){$("nearResults").textContent="Suche fehlgeschlagen: "+e.message}
 }
-function addNearby(raw){const x=JSON.parse(raw),a=load(),t=a.find(x=>x.id===selectedId);if(!t)return;t.stops.push({id:Date.now(),date:"",place:x.name,type:x.stopType||"Sehenswürdigkeit",lat:x.lat,lon:x.lon,note:"Aus Umgebungssuche übernommen",nightCost:0,tollCost:0,otherCost:0});save(a)}
+function addNearby(raw){const x=JSON.parse(raw),a=load(),t=a.find(x=>x.id===selectedId);if(!t)return;t.stops.push({id:Date.now(),date:"",place:x.name,type:x.stopType||"Sehenswürdigkeit",lat:x.lat,lon:x.lon,note:`POI: ${x.category||x.stopType||"Umgebung"}${x.description?" · "+x.description:""}`,nightCost:0,tollCost:0,otherCost:0});save(a)}
+async function searchRoutePOIs(){
+ const t=getSelected();if(!t)return alert("Bitte zuerst eine Reise auswählen.");
+ const geom=t.routeSummary?.geometry;
+ if(!geom?.coordinates?.length){routePoiStatus.textContent="Bitte zuerst unter Route & Karte die Route berechnen.";return}
+ routePoiStatus.textContent="Touristische Ziele entlang der Route werden gesucht …";routePoiResults.innerHTML="";
+ const coords=geom.coordinates;
+ const maxPts=45,step=Math.max(1,Math.ceil(coords.length/maxPts));
+ const sampled=coords.filter((_,i)=>i%step===0).slice(0,maxPts).map(c=>[c[1],c[0]]);
+ const last=coords[coords.length-1];if(sampled.length&&last&&sampled[sampled.length-1][0]!==last[1])sampled.push([last[1],last[0]]);
+ try{
+  const r=await fetch("/api/route-pois",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({points:sampled,type:routePoiType.value,distance:+routePoiDistance.value||10000,limit:+routePoiLimit.value||40})});
+  const j=await r.json();if(!r.ok)throw new Error(j.error||"Suche fehlgeschlagen");
+  routePoiStatus.textContent=j.results?.length?`✓ ${j.results.length} interessante Ziele entlang der Route gefunden.`:"Keine passenden Ziele im gewählten Abstand gefunden.";
+  routePoiResults.innerHTML=(j.results||[]).map(x=>`<div class="poi poi55"><div><b>${esc(x.name)}</b><div class="poi-meta">ca. ${x.distance_to_route_m>=1000?(x.distance_to_route_m/1000).toFixed(1)+" km":Math.round(x.distance_to_route_m)+" m"} von der Route${x.description?" · "+esc(x.description):""}</div><span class="poi-cat">${esc(x.category||"Sehenswürdigkeit")}</span></div><button onclick='addRoutePOI(${JSON.stringify(JSON.stringify(x))})'>＋ Zwischenziel</button></div>`).join("");
+ }catch(e){routePoiStatus.textContent="Suche nicht möglich: "+e.message}
+}
+function addRoutePOI(raw){const x=JSON.parse(raw),a=load(),t=a.find(x=>x.id===selectedId);if(!t)return;t.stops.push({id:Date.now(),date:"",place:x.name,type:"Sehenswürdigkeit",lat:x.lat,lon:x.lon,note:`Entlang der Route · ${x.category||"POI"}${x.description?" · "+x.description:""}`,nightCost:0,tollCost:0,otherCost:0});save(a);routePoiStatus.textContent=`✓ ${x.name} wurde als Zwischenziel übernommen. Route danach neu berechnen.`}
+
 async function loadWeather(){
  const t=getSelected(),st=t?.stops.find(x=>x.id===+$("weatherStop").value);if(!st||!Number.isFinite(st.lat)){alert("Etappe benötigt Koordinaten.");return}
  $("weatherOut").innerHTML='<div class="small">Wetter wird geladen …</div>';

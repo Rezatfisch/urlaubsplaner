@@ -30,7 +30,7 @@ Editoren dürfen aktualisieren, Viewer nur lesen.
 Der Supabase Secret-/Service-Role-Key wird nicht im Browser verwendet.
 
 
-## Version 5.4
+## Version 5.6
 - Tagesplanung mit Plausibilitätscheck für Etappen, Kilometer, Ruhetage und Übernachtungen
 - Etappen können optional ab dem Reise-Startdatum fortlaufend datiert werden
 - erweitertes Reise-Cockpit
