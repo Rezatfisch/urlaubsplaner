@@ -1,7 +1,7 @@
 {
-  "name": "Urlaubsplaner 5.3",
+  "name": "Urlaubsplaner 5.4",
   "short_name": "Urlaubsplaner",
-  "description": "Reisen planen, Routen organisieren, Kosten verwalten und gemeinsam reisen.",
+  "description": "Reisen mit Tagesplanung, Routen, Kosten, Cloud und gemeinsamer Bearbeitung organisieren.",
   "id": "./",
   "start_url": "./",
   "scope": "./",

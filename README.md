@@ -28,3 +28,12 @@ Row Level Security schützt die Tabellen.
 Die Einladungsfunktion prüft serverseitig in Supabase, ob der Aufrufer Besitzer der Reise ist.
 Editoren dürfen aktualisieren, Viewer nur lesen.
 Der Supabase Secret-/Service-Role-Key wird nicht im Browser verwendet.
+
+
+## Version 5.4
+- Tagesplanung mit Plausibilitätscheck für Etappen, Kilometer, Ruhetage und Übernachtungen
+- Etappen können optional ab dem Reise-Startdatum fortlaufend datiert werden
+- erweitertes Reise-Cockpit
+- feste mobile Schnellnavigation (Übersicht, Reisen, Route, KI, Kosten)
+- verständlicher Hinweis bei fehlendem OpenAI-API-Guthaben statt technischer 429-Meldung
+- bestehende 5.3-Daten-, Cloud- und Freigabefunktionen bleiben kompatibel

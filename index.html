@@ -7,7 +7,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <link rel="apple-touch-icon" href="icon-192.png">
-  <title>Urlaubsplaner 5.3</title>
+  <title>Urlaubsplaner 5.4</title>
   <link rel="manifest" href="manifest.json">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <style>
@@ -68,17 +68,19 @@
     .nav-tile .ico{font-size:1.65rem;display:block;margin-bottom:8px}.nav-tile b{display:block;font-size:.95rem}.nav-tile span{display:block;color:var(--muted);font-size:.76rem;line-height:1.25;margin-top:4px;font-weight:500}
     #areaHeader{grid-column:1/-1;padding:10px 12px;position:sticky;top:76px;z-index:900}.area-bar{display:flex;gap:9px;align-items:center}.area-bar button{width:auto;margin:0}.area-title{font-weight:900;font-size:1.05rem}.area-sub{font-size:.78rem;color:var(--muted)}
     .quickbar{grid-column:1/-1;display:flex;gap:7px;overflow:auto;padding:2px 0 4px}.quickbar button{width:auto;white-space:nowrap;margin:0;padding:8px 11px;background:#fff}
-    @media(max-width:900px){.span4,.span5,.span7,.span8,.span12{grid-column:1/-1}.row,.row3,.routeTotals{grid-template-columns:1fr}#map{height:390px}.stop{grid-template-columns:34px 1fr}.stopactions{grid-column:2}.tile-grid{grid-template-columns:repeat(2,1fr)}.hero-kpis{grid-template-columns:repeat(2,1fr)}.nav-tile{min-height:110px;padding:12px}.dash-head{align-items:flex-start;flex-direction:column}.dash-head .small{text-align:left}#areaHeader{top:72px}}
+    /* 5.4 Tagesplanung & mobile Schnellnavigation */
+    .planner54{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:10px 0}.planner54 .metric{text-align:center}.planner-actions{display:flex;gap:7px;flex-wrap:wrap;margin:8px 0}.planner-actions button{width:auto;margin:0}.dayplan-row{display:grid;grid-template-columns:70px 1fr auto;gap:8px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line)}.dayplan-row:last-child{border-bottom:0}.day-badge{font-weight:850;background:var(--soft);border-radius:10px;padding:7px;text-align:center}.dayplan-row .warn{color:#a65a00;font-weight:800}.dayplan-row .oktxt{color:#187a3a;font-weight:800}.bottom-nav{display:none}.ai-offline{background:#fff6df;border:1px solid #ead39b;border-radius:11px;padding:10px;margin-top:7px}.ai-offline b{display:block;margin-bottom:3px}.compact-hint{padding:8px 10px;border-radius:10px;background:var(--soft);font-size:.82rem;color:var(--muted);margin-top:8px}
+    @media(max-width:900px){body{padding-bottom:70px}.span4,.span5,.span7,.span8,.span12{grid-column:1/-1}.row,.row3,.routeTotals{grid-template-columns:1fr}#map{height:390px}.stop{grid-template-columns:34px 1fr}.stopactions{grid-column:2}.tile-grid{grid-template-columns:repeat(2,1fr)}.hero-kpis{grid-template-columns:repeat(2,1fr)}.nav-tile{min-height:110px;padding:12px}.dash-head{align-items:flex-start;flex-direction:column}.dash-head .small{text-align:left}#areaHeader{top:72px}.planner54{grid-template-columns:repeat(2,1fr)}.dayplan-row{grid-template-columns:62px 1fr}.dayplan-row>div:last-child{grid-column:2}.bottom-nav{position:fixed;display:grid;grid-template-columns:repeat(5,1fr);left:0;right:0;bottom:0;z-index:1300;background:#fff;border-top:1px solid var(--line);padding:6px 5px max(6px,env(safe-area-inset-bottom));box-shadow:0 -4px 18px rgba(15,23,42,.08)}.bottom-nav button{border:0;background:transparent;margin:0;padding:5px 2px;font-size:.69rem;border-radius:9px;color:var(--text)}.bottom-nav .ico{display:block;font-size:1.15rem;margin-bottom:1px}.quickbar{display:none!important}}
     @media(max-width:390px){.nav-tile b{font-size:.88rem}.nav-tile span{font-size:.72rem}.nav-tile{min-height:108px}}
 
   </style>
 </head>
 <body>
-<header><div><div class="title" onclick="showArea('home')" role="button" tabindex="0" title="Zur Übersicht"><img class="app-logo" src="icon-192.png" alt="">Urlaubsplaner</div><div class="small">Deine Reise. Perfekt geplant.</div></div><div class="head-actions"><button id="installApp" class="primary" type="button" title="Urlaubsplaner als App installieren">⬇ App installieren</button><div class="badge">Version 5.3</div></div></header>
+<header><div><div class="title" onclick="showArea('home')" role="button" tabindex="0" title="Zur Übersicht"><img class="app-logo" src="icon-192.png" alt="">Urlaubsplaner</div><div class="small">Deine Reise. Perfekt geplant.</div></div><div class="head-actions"><button id="installApp" class="primary" type="button" title="Urlaubsplaner als App installieren">⬇ App installieren</button><div class="badge">Version 5.4</div></div></header>
 
 <main><div class="grid">
 <section id="homeHero" class="card home-hero">
-  <div class="hero-top"><div><div class="hero-title" id="homeTripTitle">Bereit für die nächste Reise?</div><div class="small" id="homeTripMeta">Lege eine Reise an oder wähle eine vorhandene Reise.</div></div><div class="hero-pill">Version 5.3</div></div>
+  <div class="hero-top"><div><div class="hero-title" id="homeTripTitle">Bereit für die nächste Reise?</div><div class="small" id="homeTripMeta">Lege eine Reise an oder wähle eine vorhandene Reise.</div></div><div class="hero-pill">Version 5.4</div></div>
   <div class="hero-kpis"><div class="hero-kpi"><b id="homeDays">–</b><span>Tage</span></div><div class="hero-kpi"><b id="homeKm">–</b><span>Strecke</span></div><div class="hero-kpi"><b id="homeStops">–</b><span>Stopps</span></div><div class="hero-kpi"><b id="homeCosts">–</b><span>Etappenkosten</span></div></div>
 </section>
 <section id="homeDashboard" class="card dash-wrap">
@@ -162,6 +164,15 @@
   <div id="routeTotals" class="routeTotals"></div>
   <div id="timeline"><div class="small">Noch keine Reise gewählt.</div></div>
   <details style="margin-top:12px"><summary><b>Etappen bearbeiten und sortieren</b></summary><div id="stops"></div></details>
+</section>
+
+<section class="card span5" data-area="route">
+  <h2>📅 Tagesplanung 5.4</h2>
+  <div class="small">Prüft die Reise nach Tagen, Fahrstrecken, Ruhetagen und Übernachtungsstopps. Deine Daten werden dabei nicht automatisch überschrieben.</div>
+  <div class="row"><input id="planMaxKm" type="number" value="250" min="50" step="10" placeholder="Max. km pro Fahrtag"><input id="planRestEvery" type="number" value="5" min="2" max="10" placeholder="Ruhetag nach x Fahrtagen"></div>
+  <div class="planner-actions"><button class="primary" onclick="buildDayPlan54()">Tagesplan prüfen</button><button onclick="distributeStopDates54()">Etappen ab Startdatum datieren</button></div>
+  <div class="compact-hint">„Datieren“ setzt die Etappen ab dem Startdatum nacheinander auf Kalendertage. Vorher wird zur Sicherheit nachgefragt.</div>
+  <div id="dayPlan54"></div>
 </section>
 
 <section class="card span5">
@@ -269,6 +280,7 @@
   <div class="toolbar"><button class="primary" onclick="saveEditedStop()">Änderungen speichern</button><button onclick="cancelEdit()">Abbrechen</button></div>
 </section>
 </div></main>
+<nav class="bottom-nav" aria-label="Schnellnavigation"><button onclick="showArea('home')"><span class="ico">🏠</span>Übersicht</button><button onclick="showArea('reisen')"><span class="ico">🧳</span>Reisen</button><button onclick="showArea('route')"><span class="ico">🗺️</span>Route</button><button onclick="showArea('ki')"><span class="ico">✨</span>KI</button><button onclick="showArea('kosten')"><span class="ico">💶</span>Kosten</button></nav>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
@@ -346,7 +358,7 @@ async function askAI(){
  const p=$("aiPrompt").value.trim();if(!p){alert("Bitte einen Planungswunsch eingeben.");return}
  $("aiOut").innerHTML='<div class="airesult">KI wird angefragt …</div>';
  try{const r=await fetch("/api/plan",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({prompt:p,trip:getSelected()})});const j=await r.json();if(!r.ok)throw new Error(j.error||"KI-Fehler");$("aiOut").innerHTML=`<div class="airesult">${esc(j.text)}</div>`}
- catch(e){$("aiOut").innerHTML=`<div class="airesult">KI-Aufruf nicht möglich: ${esc(e.message)}\n\nDie restliche App funktioniert weiterhin.</div>`}
+ catch(e){$("aiOut").innerHTML=aiErrorBox54(e)}
 }
 
 const VEHICLE_KEY="urlaubsplaner_vehicle_v1";
@@ -374,7 +386,7 @@ async function autoPlan(){
   const j=await r.json();if(!r.ok)throw new Error(j.error||"KI-Fehler");
   window.lastAIPlanText=j.text;
   $("autoOut").innerHTML=`<div class="airesult">${esc(j.text)}</div>`;
- }catch(e){$("autoOut").innerHTML=`<div class="airesult">Automatische Planung nicht möglich: ${esc(e.message)}</div>`}
+ }catch(e){$("autoOut").innerHTML=aiErrorBox54(e)}
 }
 
 async function importAIPlan(){
@@ -427,6 +439,32 @@ function updateMap(t){
  if(pts.length){const ll=pts.map(s=>[s.lat,s.lon]);map.fitBounds(L.latLngBounds(ll).pad(.18))}else map.setView([51.1,10.4],5)
 }
 
+function aiErrorBox54(e){
+ const msg=String(e?.message||e||"Unbekannter Fehler");
+ if(/429|credits remaining|quota|billing/i.test(msg))return '<div class="ai-offline"><b>✨ KI momentan nicht verfügbar</b>Das API-Guthaben ist derzeit aufgebraucht. Alle Reise-, Routen-, Kosten- und Cloud-Funktionen der App funktionieren weiter. Sobald API-Guthaben vorhanden ist, kann die KI wieder genutzt werden.</div>';
+ return `<div class="airesult">KI-Aufruf nicht möglich: ${esc(msg)}<br><br>Die übrige App funktioniert weiterhin.</div>`;
+}
+function tripDays54(t){if(!t?.start||!t?.end)return null;const a=new Date(t.start+"T12:00:00"),b=new Date(t.end+"T12:00:00");return Math.max(1,Math.round((b-a)/86400000)+1)}
+function dateDE54(v){if(!v)return "Datum offen";try{return new Date(v+"T12:00:00").toLocaleDateString("de-DE",{day:"2-digit",month:"2-digit",year:"numeric"})}catch{return v}}
+function buildDayPlan54(){
+ const t=getSelected(),box=$("dayPlan54");if(!t){box.innerHTML='<div class="alert">Bitte zuerst eine Reise auswählen.</div>';return}
+ const maxKm=+$('planMaxKm').value||250,restEvery=Math.max(2,+$('planRestEvery').value||5),st=t.stops||[],legs=t.routeSummary?.legs||[];
+ const days=tripDays54(t),dated=st.filter(x=>x.date).length,nights=st.filter(x=>["Campingplatz","Stellplatz","Hotel"].includes(x.type)).length;
+ let over=0;legs.forEach(x=>{if((+x.distance_km||0)>maxKm)over++});
+ const suggestedRest=Math.max(0,Math.floor(Math.max(0,st.length-1)/restEvery));
+ const actualRest=st.filter(x=>/pause|ruhe/i.test(String(x.type)+" "+String(x.note||""))).length;
+ const cost=st.reduce((n,x)=>n+(+x.nightCost||0)+(+x.tollCost||0)+(+x.otherCost||0),0);
+ let html=`<div class="planner54"><div class="metric"><b>${days??"–"}</b><span class="small">Reisetage</span></div><div class="metric"><b>${st.length}</b><span class="small">Etappen</span></div><div class="metric"><b>${nights}</b><span class="small">Übernachtungen</span></div><div class="metric"><b>${cost.toFixed(0)} €</b><span class="small">Etappenkosten</span></div></div>`;
+ const warnings=[];if(!t.routeSummary?.distanceKm)warnings.push("Route noch nicht berechnet – Kilometerprüfung ist deshalb eingeschränkt.");if(over)warnings.push(`${over} Routenabschnitt(e) liegen über ${maxKm} km.`);if(dated<st.length)warnings.push(`${st.length-dated} Etappe(n) haben noch kein Datum.`);if(nights<Math.max(1,Math.floor(st.length/2)))warnings.push("Nur wenige Etappen sind ausdrücklich als Übernachtungsstopp markiert.");if(actualRest<suggestedRest)warnings.push(`Für diese Planung wären ungefähr ${suggestedRest} Ruhetag(e) sinnvoll; erkannt wurden ${actualRest}.`);
+ html+=warnings.length?warnings.map(x=>`<div class="alert">⚠ ${esc(x)}</div>`).join(""):'<div class="alert good">✓ Tagesplanung wirkt schlüssig. Keine offensichtlichen Lücken gefunden.</div>';
+ if(st.length){html+='<h3 style="margin-top:12px">Etappen nach Tagen</h3>'+st.map((x,i)=>{const leg=i?legs[i-1]:null,km=leg?Math.round(leg.distance_km||0):0,bad=leg&&km>maxKm;return `<div class="dayplan-row"><div class="day-badge">Tag ${i+1}</div><div><b>${esc(x.place||"Etappe")}</b><div class="small">${esc(dateDE54(x.date))} · ${esc(x.type||"Etappe")}</div></div><div class="${bad?'warn':'oktxt'}">${i===0?'Start':leg?(km+' km'):'–'}</div></div>`}).join("")}
+ box.innerHTML=html;
+}
+function distributeStopDates54(){
+ const a=load(),t=a.find(x=>x.id===selectedId);if(!t)return alert("Bitte zuerst eine Reise auswählen.");if(!t.start)return alert("Bitte zuerst ein Startdatum für die Reise eintragen.");if(!t.stops?.length)return alert("Noch keine Etappen vorhanden.");
+ if(!confirm(`Alle ${t.stops.length} Etappen ab ${dateDE54(t.start)} fortlaufend datieren? Vorhandene Etappendaten werden dabei ersetzt.`))return;
+ const d=new Date(t.start+"T12:00:00");t.stops.forEach((x,i)=>{const n=new Date(d);n.setDate(d.getDate()+i);x.date=n.toISOString().slice(0,10)});save(a);buildDayPlan54();
+}
 function renderTimeline(t){
  const box=$("timeline"),tot=$("routeTotals");if(!box||!tot)return;
  if(!t){box.innerHTML='<div class="small">Noch keine Reise gewählt.</div>';tot.innerHTML="";return}
@@ -477,7 +515,7 @@ function exportGPX(){
  downloadText((t.title||"reise").replace(/[^a-z0-9_-]+/gi,"_")+".gpx",xml,"application/gpx+xml");
 }
 function downloadText(name,text,type){const b=new Blob([text],{type}),u=URL.createObjectURL(b),a=document.createElement("a");a.href=u;a.download=name;a.click();URL.revokeObjectURL(u)}
-function backupAll(){const o={version:"1.6",trips:load(),vehicle:localStorage.getItem(VEHICLE_KEY),pack:arrKey(PACK_KEY),docs:arrKey(DOC_KEY),favs:arrKey(FAV_KEY),budget:localStorage.getItem(BUDGET_KEY),journal:localStorage.getItem(JOURNAL_KEY)};downloadText("urlaubsplaner_backup.json",JSON.stringify(o,null,2),"application/json")}
+function backupAll(){const o={version:"1.7",trips:load(),vehicle:localStorage.getItem(VEHICLE_KEY),pack:arrKey(PACK_KEY),docs:arrKey(DOC_KEY),favs:arrKey(FAV_KEY),budget:localStorage.getItem(BUDGET_KEY),journal:localStorage.getItem(JOURNAL_KEY)};downloadText("urlaubsplaner_backup.json",JSON.stringify(o,null,2),"application/json")}
 async function restoreAll(){const f=$("restoreFile").files[0];if(!f)return alert("Bitte Backup-Datei wählen.");try{const o=JSON.parse(await f.text());if(!Array.isArray(o.trips))throw Error("Ungültiges Backup");localStorage.setItem(KEY,JSON.stringify(o.trips));if(o.vehicle)localStorage.setItem(VEHICLE_KEY,o.vehicle);setArr(PACK_KEY,o.pack||[]);localStorage.setItem(DOC_KEY,JSON.stringify(o.docs||[]));localStorage.setItem(FAV_KEY,JSON.stringify(o.favs||[]));localStorage.setItem(BUDGET_KEY,o.budget||"0");if(o.journal)localStorage.setItem(JOURNAL_KEY,o.journal);selectedId=o.trips[0]?.id??null;loadVehicle();render();alert("Backup wiederhergestellt.")}catch(e){alert("Backup konnte nicht gelesen werden: "+e.message)}}
 async function shareTrip(){const t=getSelected();if(!t)return;const txt=`${t.title}\n${t.start||""} – ${t.end||""}\n${t.origin||""} → ${t.destination||""}\n\n${t.stops.map((s,i)=>`Tag ${i+1}: ${s.place} (${s.type})`).join("\n")}${t.routeSummary?`\n\nGesamt: ${Math.round(t.routeSummary.distanceKm||0)} km · ${formatHours(t.routeSummary.durationHours||0)}`:""}`;try{if(navigator.share){await navigator.share({title:t.title,text:txt})}else{await navigator.clipboard.writeText(txt);$("shareOut").innerHTML='<div class="sharebox">Text wurde kopiert.</div>'}}catch{$("shareOut").innerHTML=`<div class="sharebox">${esc(txt)}</div>`}}
 function renderExtras(){
@@ -521,7 +559,7 @@ function calcDailyCosts(){const t=getSelected();if(!t)return;const n=Math.max(1,
 function exportICS(){const t=getSelected();if(!t)return;const events=t.stops.filter(x=>x.date).map((x,i)=>`BEGIN:VEVENT\nUID:${t.id}-${x.id}@urlaubsplaner\nDTSTART;VALUE=DATE:${x.date.replaceAll("-","")}\nSUMMARY:${x.place.replaceAll("\n"," ")}\nDESCRIPTION:${(x.note||x.type).replaceAll("\n"," ")}\nEND:VEVENT`).join("\n");const ics=`BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Urlaubsplaner 5.2//DE\n${events}\nEND:VCALENDAR`;downloadText((t.title||"reise")+".ics",ics,"text/calendar")}
 function searchTrips(){const q=$("globalSearch").value.trim().toLowerCase();if(!q){$("globalResults").innerHTML="";return}const hits=[];load().forEach(t=>{if(`${t.title} ${t.origin} ${t.destination}`.toLowerCase().includes(q))hits.push(t.title);(t.stops||[]).forEach(x=>{if(`${x.place} ${x.note} ${x.type}`.toLowerCase().includes(q))hits.push(`${t.title}: ${x.place}`)})});$("globalResults").innerHTML=[...new Set(hits)].slice(0,20).map(x=>`<div class="poi">${esc(x)}</div>`).join("")||'<div class="small">Kein Treffer.</div>'}
 function duplicateTrip(){const t=getSelected();if(!t)return;const a=load(),copy=JSON.parse(JSON.stringify(t));copy.id=Date.now();copy.title=t.title+" – Kopie";copy.stops.forEach((x,i)=>x.id=Date.now()+i+1);a.push(copy);selectedId=copy.id;save(a)}
-async function aiAudit(){const t=getSelected();if(!t)return;let v={};try{v=JSON.parse(localStorage.getItem(VEHICLE_KEY)||"{}")}catch{};$("auditOut").innerHTML='<div class="airesult">Reise wird geprüft …</div>';const prompt=`Prüfe diese komplette Reise kritisch auf Plausibilität, zu lange Tagesetappen, Ruhetage, Fahrzeugtauglichkeit, Tankreichweite, Kostenlücken, Übernachtungsplanung, Fähren/Maut und fehlende Vorbereitungen. Priorisiere konkrete Verbesserungen. Fahrzeug: ${JSON.stringify(v)}. Reise: ${JSON.stringify(t)}. Zusatzplanung: ${JSON.stringify(ext())}`;try{const r=await fetch("/api/plan",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({prompt,trip:t,vehicle:v})}),j=await r.json();if(!r.ok)throw Error(j.error);$("auditOut").innerHTML=`<div class="airesult">${esc(j.text)}</div>`}catch(e){$("auditOut").innerHTML=`<div class="airesult">${esc(e.message)}</div>`}}
+async function aiAudit(){const t=getSelected();if(!t)return;let v={};try{v=JSON.parse(localStorage.getItem(VEHICLE_KEY)||"{}")}catch{};$("auditOut").innerHTML='<div class="airesult">Reise wird geprüft …</div>';const prompt=`Prüfe diese komplette Reise kritisch auf Plausibilität, zu lange Tagesetappen, Ruhetage, Fahrzeugtauglichkeit, Tankreichweite, Kostenlücken, Übernachtungsplanung, Fähren/Maut und fehlende Vorbereitungen. Priorisiere konkrete Verbesserungen. Fahrzeug: ${JSON.stringify(v)}. Reise: ${JSON.stringify(t)}. Zusatzplanung: ${JSON.stringify(ext())}`;try{const r=await fetch("/api/plan",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({prompt,trip:t,vehicle:v})}),j=await r.json();if(!r.ok)throw Error(j.error);$("auditOut").innerHTML=`<div class="airesult">${esc(j.text)}</div>`}catch(e){$("auditOut").innerHTML=aiErrorBox54(e)}}
 function render42(){
  const o=ext();if($("countryNotes"))$("countryNotes").value=o.countryNotes||"";if($("mealNotes"))$("mealNotes").value=o.meal||"";
  simpleList("travellers","travellers",x=>esc(x.name));simpleList("pets","pets",x=>`${esc(x.name)} · ${esc(x.type||"Tier")}`);simpleList("emergencies","emergencies",x=>`${esc(x.name)} · ${esc(x.phone)}`);
@@ -529,7 +567,7 @@ function render42(){
  simpleList("tolls","tolls",x=>`${esc(x.name)} · ${(+x.amount).toFixed(2)} € ${x.until?"· bis "+esc(x.until):""}`);simpleList("ferries","ferries",x=>`${esc(x.route)} · ${(+x.price).toFixed(2)} €<br><span class="small">${esc(x.date||"")}</span>`);simpleList("services","services",x=>`${esc(x.type)} · ${esc(x.place)}`);
  simpleList("supplies","supplies",x=>esc(x.text));simpleList("shopping","shopping",x=>esc(x.text));simpleList("photos","photos",x=>esc(x.text));simpleList("wishes","wishes",x=>esc(x.text));
  const t=getSelected(),st=t?.stops||[],nights=st.filter(x=>["Campingplatz","Stellplatz","Hotel"].includes(x.type)).length;$("nightStats").innerHTML=`<b>${nights}</b> von ${st.length} Etappen sind ausdrücklich als Übernachtungsstopp markiert.`;
- const rs=t?.routeSummary||{};$("cockpit").innerHTML=`<div class="kpi"><b>${st.length}</b>Etappen</div><div class="kpi"><b>${Math.round(rs.distanceKm||0)} km</b>Strecke</div><div class="kpi"><b>${rs.durationHours?formatHours(rs.durationHours):"–"}</b>Fahrzeit</div><div class="kpi"><b>${bucket("bookings").length}</b>Buchungen</div><div class="kpi"><b>${bucket("reminders").length}</b>Erinnerungen</div><div class="kpi"><b>${nights}</b>Übernachtungen</div>`;
+ const rs=t?.routeSummary||{},tripDays=tripDays54(t),restDays=st.filter(x=>/pause|ruhe/i.test(String(x.type)+" "+String(x.note||""))).length,tripCost=st.reduce((n,x)=>n+(+x.nightCost||0)+(+x.tollCost||0)+(+x.otherCost||0),0);$("cockpit").innerHTML=`<div class="kpi"><b>${tripDays??"–"}</b>Reisetage</div><div class="kpi"><b>${st.length}</b>Etappen</div><div class="kpi"><b>${Math.round(rs.distanceKm||0)} km</b>Strecke</div><div class="kpi"><b>${rs.durationHours?formatHours(rs.durationHours):"–"}</b>Fahrzeit</div><div class="kpi"><b>${nights}</b>Übernachtungen</div><div class="kpi"><b>${restDays}</b>Ruhetage</div><div class="kpi"><b>${tripCost.toFixed(0)} €</b>Etappenkosten</div><div class="kpi"><b>${bucket("bookings").length}</b>Buchungen</div><div class="kpi"><b>${bucket("reminders").length}</b>Erinnerungen</div>`;
  const alerts=[];if(st.length&&!rs.distanceKm)alerts.push("Route nach Änderungen neu berechnen.");if(st.some(x=>!Number.isFinite(x.lat)))alerts.push("Einige Etappen haben noch keine Koordinaten.");if(st.length&&nights<Math.max(1,Math.floor(st.length/2)))alerts.push("Nur wenige Etappen sind als Übernachtungsstopp markiert.");$("travelAlerts").innerHTML=alerts.map(x=>`<div class="alert">⚠ ${esc(x)}</div>`).join("")||'<div class="alert good">✓ Keine offensichtlichen Planungswarnungen.</div>';
 }
 function render(){
@@ -590,7 +628,7 @@ function showArea(area){
  if(!home){const info=AREA_INFO[area]||["Bereich",""];document.getElementById("areaTitle").textContent=info[0];document.getElementById("areaSub").textContent=info[1];window.scrollTo({top:0,behavior:"smooth"});}
  else{updateHomeSummary();window.scrollTo({top:0,behavior:"smooth"});}
  if(area==="route"&&window.map)setTimeout(()=>{try{map.invalidateSize()}catch{}},180);
- localStorage.setItem("urlaubsplaner_area_v53",area);
+ localStorage.setItem("urlaubsplaner_area_v54",area);
 }
 function updateHomeSummary(){
  const t=getSelected?.();
