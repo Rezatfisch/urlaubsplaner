@@ -3,15 +3,18 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <meta name="theme-color" content="#ffffff">
-  <title>Urlaubsplaner 5.1</title>
+  <meta name="theme-color" content="#172033">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <title>Urlaubsplaner 5.2</title>
   <link rel="manifest" href="manifest.json">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <style>
     :root{--bg:#f3f5f8;--card:#fff;--text:#182132;--muted:#6b7280;--line:#dfe4ea;--soft:#eef2f6;--accent:#172033;--ok:#eaf7ee}
     *{box-sizing:border-box} body{margin:0;font-family:system-ui,-apple-system,Segoe UI,sans-serif;background:var(--bg);color:var(--text)}
     header{position:sticky;top:0;z-index:1000;background:#fff;border-bottom:1px solid var(--line);padding:14px 17px;display:flex;justify-content:space-between;align-items:center}
-    .title{font-weight:850;font-size:1.12rem}.badge{background:var(--soft);border-radius:999px;padding:5px 9px;font-size:.78rem}
+    .title{font-weight:850;font-size:1.12rem;display:flex;align-items:center;gap:9px}.app-logo{width:38px;height:38px;border-radius:11px;box-shadow:0 2px 8px rgba(15,23,42,.18)}.head-actions{display:flex;gap:7px;align-items:center}.head-actions button{width:auto;margin:0;padding:7px 10px}.badge{background:var(--soft);border-radius:999px;padding:5px 9px;font-size:.78rem;white-space:nowrap}
     main{max-width:1240px;margin:auto;padding:14px}.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:12px}
     .span4{grid-column:span 4}.span5{grid-column:span 5}.span7{grid-column:span 7}.span8{grid-column:span 8}.span12{grid-column:span 12}
     .card{background:var(--card);border-radius:17px;padding:15px;box-shadow:0 2px 10px rgba(15,23,42,.06)}
@@ -55,7 +58,7 @@
   </style>
 </head>
 <body>
-<header><div><div class="title">🌍 Urlaubsplaner</div><div class="small">Reisen · Route · Stellplätze · Kosten · KI</div></div><div class="badge">Version 5.1</div></header>
+<header><div><div class="title"><img class="app-logo" src="icon-192.png" alt="">Urlaubsplaner</div><div class="small">Reisen · Route · Stellplätze · Kosten · KI</div></div><div class="head-actions"><button id="installApp" class="primary" type="button" title="Urlaubsplaner als App installieren">⬇ App installieren</button><div class="badge">Version 5.2</div></div></header>
 
 <main><div class="grid">
 <section class="card span12" id="cloudCard">
@@ -431,7 +434,7 @@ async function loadWeather(){
 }
 function exportGPX(){
  const t=getSelected();if(!t)return;const pts=t.stops.filter(s=>Number.isFinite(s.lat)&&Number.isFinite(s.lon));if(!pts.length){alert("Keine Koordinaten vorhanden.");return}
- const xml=`<?xml version="1.0" encoding="UTF-8"?><gpx version="1.1" creator="Urlaubsplaner 5.1" xmlns="http://www.topografix.com/GPX/1/1"><metadata><name>${esc(t.title)}</name></metadata>${pts.map(s=>`<wpt lat="${s.lat}" lon="${s.lon}"><name>${esc(s.place)}</name><desc>${esc(s.note||s.type)}</desc></wpt>`).join("")}<rte><name>${esc(t.title)}</name>${pts.map(s=>`<rtept lat="${s.lat}" lon="${s.lon}"><name>${esc(s.place)}</name></rtept>`).join("")}</rte></gpx>`;
+ const xml=`<?xml version="1.0" encoding="UTF-8"?><gpx version="1.1" creator="Urlaubsplaner 5.2" xmlns="http://www.topografix.com/GPX/1/1"><metadata><name>${esc(t.title)}</name></metadata>${pts.map(s=>`<wpt lat="${s.lat}" lon="${s.lon}"><name>${esc(s.place)}</name><desc>${esc(s.note||s.type)}</desc></wpt>`).join("")}<rte><name>${esc(t.title)}</name>${pts.map(s=>`<rtept lat="${s.lat}" lon="${s.lon}"><name>${esc(s.place)}</name></rtept>`).join("")}</rte></gpx>`;
  downloadText((t.title||"reise").replace(/[^a-z0-9_-]+/gi,"_")+".gpx",xml,"application/gpx+xml");
 }
 function downloadText(name,text,type){const b=new Blob([text],{type}),u=URL.createObjectURL(b),a=document.createElement("a");a.href=u;a.download=name;a.click();URL.revokeObjectURL(u)}
@@ -476,7 +479,7 @@ function suggestRestDays(){const t=getSelected(),n=t?.stops.length||0,r=Math.max
 function checkDailyKm(){const t=getSelected(),max=+$("maxDailyCheck").value||250,legs=t?.routeSummary?.legs||[];const bad=legs.map((x,i)=>({i,km:x.distance_km})).filter(x=>x.km>max);$("dailyKmOut").innerHTML=bad.length?bad.map(x=>`<div class="alert">Abschnitt ${x.i+1} → ${x.i+2}: <b>${Math.round(x.km)} km</b></div>`).join(""):'<div class="alert good">Alle berechneten Abschnitte liegen im Limit.</div>'}
 function tankStopPlan(){let v={};try{v=JSON.parse(localStorage.getItem(VEHICLE_KEY)||"{}")}catch{}const t=getSelected(),km=t?.routeSummary?.distanceKm||0,range=v.consumption?(v.tank/v.consumption*100*.85):0,n=range?Math.max(0,Math.ceil(km/range)-1):0;$("tankPlanOut").innerHTML=`Planstrecke: <b>${Math.round(km)} km</b><br>Sichere Reichweite: <b>${Math.round(range)} km</b><br>Voraussichtlich mindestens <b>${n}</b> Tankstopp(s).`}
 function calcDailyCosts(){const t=getSelected();if(!t)return;const n=Math.max(1,t.stops.length),fixed=t.stops.reduce((z,x)=>z+(+x.nightCost||0)+(+x.tollCost||0)+(+x.otherCost||0),0);$("dailyCostOut").innerHTML=`Erfasste Etappenkosten: <b>${fixed.toFixed(2)} €</b><br>Ø pro Etappe/Tag: <b>${(fixed/n).toFixed(2)} €</b>`}
-function exportICS(){const t=getSelected();if(!t)return;const events=t.stops.filter(x=>x.date).map((x,i)=>`BEGIN:VEVENT\nUID:${t.id}-${x.id}@urlaubsplaner\nDTSTART;VALUE=DATE:${x.date.replaceAll("-","")}\nSUMMARY:${x.place.replaceAll("\n"," ")}\nDESCRIPTION:${(x.note||x.type).replaceAll("\n"," ")}\nEND:VEVENT`).join("\n");const ics=`BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Urlaubsplaner 5.1//DE\n${events}\nEND:VCALENDAR`;downloadText((t.title||"reise")+".ics",ics,"text/calendar")}
+function exportICS(){const t=getSelected();if(!t)return;const events=t.stops.filter(x=>x.date).map((x,i)=>`BEGIN:VEVENT\nUID:${t.id}-${x.id}@urlaubsplaner\nDTSTART;VALUE=DATE:${x.date.replaceAll("-","")}\nSUMMARY:${x.place.replaceAll("\n"," ")}\nDESCRIPTION:${(x.note||x.type).replaceAll("\n"," ")}\nEND:VEVENT`).join("\n");const ics=`BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Urlaubsplaner 5.2//DE\n${events}\nEND:VCALENDAR`;downloadText((t.title||"reise")+".ics",ics,"text/calendar")}
 function searchTrips(){const q=$("globalSearch").value.trim().toLowerCase();if(!q){$("globalResults").innerHTML="";return}const hits=[];load().forEach(t=>{if(`${t.title} ${t.origin} ${t.destination}`.toLowerCase().includes(q))hits.push(t.title);(t.stops||[]).forEach(x=>{if(`${x.place} ${x.note} ${x.type}`.toLowerCase().includes(q))hits.push(`${t.title}: ${x.place}`)})});$("globalResults").innerHTML=[...new Set(hits)].slice(0,20).map(x=>`<div class="poi">${esc(x)}</div>`).join("")||'<div class="small">Kein Treffer.</div>'}
 function duplicateTrip(){const t=getSelected();if(!t)return;const a=load(),copy=JSON.parse(JSON.stringify(t));copy.id=Date.now();copy.title=t.title+" – Kopie";copy.stops.forEach((x,i)=>x.id=Date.now()+i+1);a.push(copy);selectedId=copy.id;save(a)}
 async function aiAudit(){const t=getSelected();if(!t)return;let v={};try{v=JSON.parse(localStorage.getItem(VEHICLE_KEY)||"{}")}catch{};$("auditOut").innerHTML='<div class="airesult">Reise wird geprüft …</div>';const prompt=`Prüfe diese komplette Reise kritisch auf Plausibilität, zu lange Tagesetappen, Ruhetage, Fahrzeugtauglichkeit, Tankreichweite, Kostenlücken, Übernachtungsplanung, Fähren/Maut und fehlende Vorbereitungen. Priorisiere konkrete Verbesserungen. Fahrzeug: ${JSON.stringify(v)}. Reise: ${JSON.stringify(t)}. Zusatzplanung: ${JSON.stringify(ext())}`;try{const r=await fetch("/api/plan",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({prompt,trip:t,vehicle:v})}),j=await r.json();if(!r.ok)throw Error(j.error);$("auditOut").innerHTML=`<div class="airesult">${esc(j.text)}</div>`}catch(e){$("auditOut").innerHTML=`<div class="airesult">${esc(e.message)}</div>`}}
@@ -565,6 +568,24 @@ window.saveSharedTrip=async(id)=>{
  shareStatus.textContent=error?error.message:"✓ Gemeinsame Reise aktualisiert.";if(!error)await loadSharedTrips();
 };
 initCloud();
+</script>
+
+<script>
+let deferredInstallPrompt=null;
+const installButton=document.getElementById("installApp");
+function updateInstallButton(){
+  const standalone=window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone===true;
+  if(standalone){installButton.textContent="✓ App installiert";installButton.disabled=true;}
+}
+window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();deferredInstallPrompt=e;installButton.disabled=false;installButton.textContent="⬇ App installieren";});
+installButton.addEventListener("click",async()=>{
+  if(deferredInstallPrompt){deferredInstallPrompt.prompt();await deferredInstallPrompt.userChoice;deferredInstallPrompt=null;updateInstallButton();return;}
+  if(window.matchMedia("(display-mode: standalone)").matches){updateInstallButton();return;}
+  alert("Falls kein Installationsfenster erscheint: Browser-Menü öffnen und ‚App installieren‘ bzw. ‚Zum Startbildschirm hinzufügen‘ wählen.");
+});
+window.addEventListener("appinstalled",updateInstallButton);
+if("serviceWorker" in navigator) window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));
+updateInstallButton();
 </script>
 
 </body></html>

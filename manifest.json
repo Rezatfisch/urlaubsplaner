@@ -1,8 +1,15 @@
 {
-  "name":"Urlaubsplaner",
-  "short_name":"Urlaub",
-  "start_url":"./",
-  "display":"standalone",
-  "background_color":"#f3f5f8",
-  "theme_color":"#ffffff"
+  "name": "Urlaubsplaner 5.2",
+  "short_name": "Urlaubsplaner",
+  "description": "Reisen planen, Routen organisieren, Kosten verwalten und gemeinsam reisen.",
+  "id": "./",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f3f5f8",
+  "theme_color": "#172033",
+  "icons": [
+    {"src":"icon-192.png","sizes":"192x192","type":"image/png","purpose":"any maskable"},
+    {"src":"icon-512.png","sizes":"512x512","type":"image/png","purpose":"any maskable"}
+  ]
 }
