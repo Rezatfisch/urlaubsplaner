@@ -7,10 +7,23 @@ app.use(express.static("."));
 
 const client = process.env.OPENAI_API_KEY ? new OpenAI({apiKey:process.env.OPENAI_API_KEY}) : null;
 
-app.get("/api/config",(req,res)=>res.json({
-  supabaseUrl:process.env.SUPABASE_URL||"",
-  supabasePublishableKey:process.env.SUPABASE_PUBLISHABLE_KEY||""
-}));
+app.get("/api/config", (req, res) => {
+  res.set("Cache-Control", "no-store, no-cache, must-revalidate");
+
+  const supabaseUrl = String(process.env.SUPABASE_URL || "")
+    .trim()
+    .replace(/\/rest\/v1\/?$/i, "")
+    .replace(/\/+$/, "");
+
+  const supabasePublishableKey = String(
+    process.env.SUPABASE_PUBLISHABLE_KEY || ""
+  ).trim();
+
+  res.json({
+    supabaseUrl,
+    supabasePublishableKey
+  });
+});
 
 app.get("/health",(req,res)=>res.json({ok:true,version:"5.1"}));
 
