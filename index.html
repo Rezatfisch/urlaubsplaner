@@ -77,11 +77,11 @@
   </style>
 </head>
 <body>
-<header><div><div class="title" onclick="showArea('home')" role="button" tabindex="0" title="Zur Übersicht"><img class="app-logo" src="icon-192.png" alt="">Urlaubsplaner</div><div class="small">Deine Reise. Perfekt geplant.</div></div><div class="head-actions"><button id="installApp" class="primary" type="button" title="Urlaubsplaner als App installieren">⬇ App installieren</button><div class="badge">Version 5.9.2</div></div></header>
+<header><div><div class="title" onclick="showArea('home')" role="button" tabindex="0" title="Zur Übersicht"><img class="app-logo" src="icon-192.png" alt="">Urlaubsplaner</div><div class="small">Deine Reise. Perfekt geplant.</div></div><div class="head-actions"><button id="installApp" class="primary" type="button" title="Urlaubsplaner als App installieren">⬇ App installieren</button><div class="badge">Version 5.9.3</div></div></header>
 
 <main><div class="grid">
 <section id="homeHero" class="card home-hero">
-  <div class="hero-top"><div><div class="hero-title" id="homeTripTitle">Bereit für die nächste Reise?</div><div class="small" id="homeTripMeta">Lege eine Reise an oder wähle eine vorhandene Reise.</div></div><div class="hero-pill">Version 5.9.2</div></div>
+  <div class="hero-top"><div><div class="hero-title" id="homeTripTitle">Bereit für die nächste Reise?</div><div class="small" id="homeTripMeta">Lege eine Reise an oder wähle eine vorhandene Reise.</div></div><div class="hero-pill">Version 5.9.3</div></div>
   <div class="hero-kpis"><div class="hero-kpi"><b id="homeDays">–</b><span>Tage</span></div><div class="hero-kpi"><b id="homeKm">–</b><span>Strecke</span></div><div class="hero-kpi"><b id="homeStops">–</b><span>Stopps</span></div><div class="hero-kpi"><b id="homeCosts">–</b><span>Etappenkosten</span></div></div>
 </section>
 <section id="homeDashboard" class="card dash-wrap">
@@ -222,8 +222,8 @@
 <section class="card span12" data-area="ziel">
  <h2>📍 Universelles Ziel hinzufügen</h2>
  <div class="small">Adresse/Ort, GPS-Koordinaten, what3words oder direkt auf der Karte wählen. Danach bestimmst du selbst, was das Ziel ist.</div>
- <div class="row3" style="margin-top:8px"><select id="targetInputMode"><option value="address">🏠 Adresse / Ort</option><option value="coords">🧭 Koordinaten</option><option value="w3w">/// what3words</option></select><input id="targetInput" placeholder="z. B. Schloss Neuschwanstein"><button class="primary" onclick="resolveUniversalTarget()">Ziel finden</button></div>
- <div class="small">Koordinaten: <b>Breitengrad, Längengrad</b>, z. B. 49.03, 11.03. Für what3words ist ein WHAT3WORDS_API_KEY auf Render erforderlich.</div>
+ <div class="row3" style="margin-top:8px"><select id="targetInputMode"><option value="auto">✨ Automatisch erkennen</option><option value="address">🏠 Adresse / Ort</option><option value="coords">🧭 Koordinaten</option><option value="w3w">/// what3words</option></select><input id="targetInput" placeholder="z. B. Schloss Neuschwanstein"><button class="primary" onclick="resolveUniversalTarget()">Ziel finden</button></div>
+ <div class="small">Die App erkennt <b>Adresse/Ort</b>, <b>Breitengrad, Längengrad</b> und Eingaben mit <b>///</b> automatisch. what3words wird nur verwendet, wenn dein API-Tarif die Koordinatenumwandlung erlaubt.</div>
  <div id="targetSearchResults"></div>
  <div id="targetMap" style="height:360px;border-radius:14px;margin-top:9px;background:#e8edf2"></div>
  <div id="targetPicked" class="routebox">Noch kein Ziel gewählt. Du kannst auch direkt auf die Karte tippen.</div>
@@ -805,7 +805,44 @@ let targetMap59=null,targetMarker59=null,targetChoice59=null,targetDetour59=null
 function initTargetMap59(){if(targetMap59)return;const el=$("targetMap");if(!el)return;targetMap59=L.map(el).setView([51.1,10.4],5);L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"© OpenStreetMap"}).addTo(targetMap59);targetMap59.on("click",e=>pickUniversalTarget(e.latlng.lat,e.latlng.lng,"Gewählter Kartenpunkt","Karte"));}
 function refreshTargetInsert59(){const t=getSelected(),sel=$("targetInsertAfter");if(!sel)return;sel.innerHTML=(t?.stops||[]).map((x,i)=>`<option value="${i}">nach ${i+1}. ${esc(x.place)}</option>`).join("");}
 function pickUniversalTarget(lat,lon,name,source){targetChoice59={lat:+lat,lon:+lon,name:name||"Neues Ziel",source};if(targetMarker59)targetMap59.removeLayer(targetMarker59);targetMarker59=L.marker([lat,lon]).addTo(targetMap59);targetMap59.setView([lat,lon],14);$("targetName").value=name||"";$("targetPicked").innerHTML=`<b>📍 ${esc(name||"Gewähltes Ziel")}</b><br>${(+lat).toFixed(6)}, ${(+lon).toFixed(6)} · ${esc(source||"")}`;targetDetour59=null;$("targetDetour").textContent="Ziel gewählt. Jetzt Einfügeposition festlegen und Abstecher berechnen.";}
-async function resolveUniversalTarget(){initTargetMap59();const mode=$("targetInputMode").value,q=$("targetInput").value.trim();if(!q)return alert("Bitte Ziel eingeben.");$("targetSearchResults").innerHTML='<div class="small">Suche …</div>';try{if(mode==="coords"){const m=q.replace(/;/g,",").split(",").map(x=>+x.trim());if(m.length<2||!Number.isFinite(m[0])||!Number.isFinite(m[1]))throw Error("Koordinaten bitte als Breitengrad, Längengrad eingeben.");pickUniversalTarget(m[0],m[1],"GPS-Ziel","Koordinaten");$("targetSearchResults").innerHTML="";return}if(mode==="w3w"){const r=await fetch("/api/what3words?words="+encodeURIComponent(q)),j=await r.json();if(!r.ok)throw Error(j.error||"what3words nicht gefunden");pickUniversalTarget(j.lat,j.lon,"///"+j.words,"what3words");$("targetSearchResults").innerHTML=`<div class="searchresult"><b>///${esc(j.words)}</b><div class="small">${esc(j.nearestPlace||"")} · ${esc(j.country||"")}</div></div>`;return}const r=await fetch("/api/geocode?q="+encodeURIComponent(q)),j=await r.json();if(!r.ok)throw Error(j.error||"Suche fehlgeschlagen");$("targetSearchResults").innerHTML=(j.results||[]).map((x,i)=>`<div class="searchresult" onclick='pickUniversalTarget(${x.lat},${x.lon},${JSON.stringify(x.name||x.display_name.split(",")[0])},"Adresse")'><b>${esc(x.name||x.display_name.split(",")[0])}</b><div class="small">${esc(x.display_name)}</div></div>`).join("")||'<div class="small">Kein Treffer.</div>'}catch(e){$("targetSearchResults").innerHTML=`<div class="alert">${esc(e.message)}</div>`}}
+async function resolveUniversalTarget(){
+ initTargetMap59();
+ let mode=$("targetInputMode").value,q=$("targetInput").value.trim();
+ if(!q)return alert("Bitte Ziel eingeben.");
+ if(mode==="auto"){
+   if(/^\s*\/\/\//.test(q)) mode="w3w";
+   else if(/^\s*-?\d+(?:[.,]\d+)?\s*[,;]\s*-?\d+(?:[.,]\d+)?\s*$/.test(q)) mode="coords";
+   else mode="address";
+ }
+ $("targetSearchResults").innerHTML='<div class="small">Suche …</div>';
+ try{
+  if(mode==="coords"){
+   const parts=q.replace(/;/g,",").split(",").map(x=>x.trim());
+   if(parts.length!==2)throw Error("Koordinaten bitte als Breitengrad, Längengrad eingeben.");
+   const lat=Number(parts[0]),lon=Number(parts[1]);
+   if(!Number.isFinite(lat)||!Number.isFinite(lon)||lat < -90||lat > 90||lon < -180||lon > 180)throw Error("Die Koordinaten sind ungültig.");
+   pickUniversalTarget(lat,lon,"GPS-Ziel","Koordinaten");$("targetSearchResults").innerHTML="";return;
+  }
+  if(mode==="w3w"){
+   const clean=q.replace(/^\s*\/\/\//,"").trim();
+   const r=await fetch("/api/what3words?words="+encodeURIComponent(clean)),j=await r.json();
+   if(!r.ok){
+     const code=j.code||"";
+     const quota=code==="QuotaExceeded"||r.status===402||/quota|plan|access to this feature/i.test(j.error||"");
+     if(quota){
+       $("targetSearchResults").innerHTML=`<div class="alert"><b>what3words kann mit deinem aktuellen API-Tarif nicht in GPS-Koordinaten umgewandelt werden.</b><br>Du kannst das Ziel weiterhin kostenlos per Adresse, GPS-Koordinaten oder Kartenklick einfügen.<div class="toolbar" style="margin-top:8px"><button onclick="openW3W59('${encodeURIComponent(clean)}')">/// In what3words öffnen</button></div></div>`;
+       return;
+     }
+     throw Error(j.error||"what3words-Adresse konnte nicht gefunden werden.");
+   }
+   pickUniversalTarget(j.lat,j.lon,"///"+j.words,"what3words");
+   $("targetSearchResults").innerHTML=`<div class="searchresult"><b>///${esc(j.words)}</b><div class="small">${esc(j.nearestPlace||"")} · ${esc(j.country||"")}</div>${j.map?`<div class="toolbar" style="margin-top:6px"><button onclick="window.open('${esc(j.map)}','_blank','noopener')">what3words-Karte öffnen</button></div>`:""}</div>`;return;
+  }
+  const r=await fetch("/api/geocode?q="+encodeURIComponent(q)),j=await r.json();if(!r.ok)throw Error(j.error||"Suche fehlgeschlagen");
+  $("targetSearchResults").innerHTML=(j.results||[]).map(x=>`<div class="searchresult" onclick='pickUniversalTarget(${x.lat},${x.lon},${JSON.stringify(x.name||x.display_name.split(",")[0])},"Adresse")'><b>${esc(x.name||x.display_name.split(",")[0])}</b><div class="small">${esc(x.display_name)}</div></div>`).join("")||'<div class="small">Kein Treffer.</div>';
+ }catch(e){$("targetSearchResults").innerHTML=`<div class="alert">${esc(e.message)}</div>`}
+}
+function openW3W59(encodedWords){const words=decodeURIComponent(encodedWords);window.open("https://what3words.com/"+encodeURIComponent(words),"_blank","noopener");}
 async function calcUniversalDetour(){const t=getSelected(),idx=+$("targetInsertAfter").value;if(!t||!targetChoice59)return alert("Bitte Reise und Ziel wählen.");const from=t.stops[idx],to=t.stops[idx+1];if(!from||!to||!Number.isFinite(from.lat)||!Number.isFinite(to.lat))return alert("Für die Abstecherberechnung brauchen die Etappe davor und danach Koordinaten.");$("targetDetour").textContent="Abstecher wird über die Straße berechnet …";try{const r=await fetch("/api/poi-detour",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({from:[from.lat,from.lon],poi:[targetChoice59.lat,targetChoice59.lon],to:[to.lat,to.lon]})}),j=await r.json();if(!r.ok)throw Error(j.error);targetDetour59=j;const stay=+$("targetStay").value||0;$("targetDetour").innerHTML=`<b>🚐 Tatsächlicher Abstecher</b><br>${esc(from.place)} → Ziel: <b>${j.to_poi_km.toFixed(1)} km · ${Math.round(j.to_poi_minutes)} Min.</b><br>Ziel → ${esc(to.place)}: <b>${j.back_to_route_km.toFixed(1)} km · ${Math.round(j.back_to_route_minutes)} Min.</b><br>Zusätzlich gegenüber direkter Route: <b>+${j.extra_km.toFixed(1)} km · +${Math.round(j.extra_minutes)} Min.</b>${stay?`<br>Aufenthalt: <b>${stay} Min.</b> · gesamter Zusatzzeitbedarf ca. <b>${Math.round(j.extra_minutes+stay)} Min.</b>`:""}`;}catch(e){$("targetDetour").textContent="Abstecher nicht berechenbar: "+e.message}}
 async function insertUniversalTarget(){const a=load(),t=a.find(x=>x.id===selectedId),idx=+$("targetInsertAfter").value;if(!t||!targetChoice59)return alert("Bitte Reise und Ziel wählen.");const typ=$("targetCustomType").value.trim()||$("targetType").value,name=$("targetName").value.trim()||targetChoice59.name||"Neues Ziel";const st={id:Date.now(),date:"",place:name,type:typ,lat:targetChoice59.lat,lon:targetChoice59.lon,note:$("targetNote").value.trim(),nightCost:0,tollCost:0,otherCost:0,stayMinutes:+$("targetStay").value||0,source:targetChoice59.source||"manuell"};t.stops.splice(Math.min(t.stops.length,idx+1),0,st);save(a);clearUniversalTarget();showArea("route");setTimeout(()=>calculateRoute(),250)}
 function clearUniversalTarget(){targetChoice59=targetDetour59=null;if(targetMarker59&&targetMap59){targetMap59.removeLayer(targetMarker59);targetMarker59=null}for(const id of ["targetInput","targetName","targetCustomType","targetNote"])if($(id))$(id).value="";if($("targetStay"))$("targetStay").value=0;if($("targetSearchResults"))$("targetSearchResults").innerHTML="";if($("targetPicked"))$("targetPicked").textContent="Noch kein Ziel gewählt. Du kannst auch direkt auf die Karte tippen.";if($("targetDetour"))$("targetDetour").textContent="Wähle ein Ziel und die Stelle in der Route.";}

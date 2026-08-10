@@ -25,7 +25,7 @@ app.get("/api/config", (req, res) => {
   });
 });
 
-app.get("/health",(req,res)=>res.json({ok:true,version:"5.9.2"}));
+app.get("/health",(req,res)=>res.json({ok:true,version:"5.9.3"}));
 
 app.get("/api/geocode", async (req,res)=>{
   try{
@@ -47,9 +47,9 @@ app.get("/api/what3words", async (req,res)=>{
   const key=String(process.env.WHAT3WORDS_API_KEY||"").trim();
   if(!key)return res.status(503).json({error:"WHAT3WORDS_API_KEY ist auf dem Server noch nicht eingerichtet."});
   const u=new URL("https://api.what3words.com/v3/convert-to-coordinates");u.searchParams.set("words",words);u.searchParams.set("key",key);u.searchParams.set("format","json");
-  const r=await fetch(u);const d=await r.json();if(!r.ok)throw Error(d?.error?.message||`what3words ${r.status}`);
+  const r=await fetch(u);const d=await r.json();if(!r.ok)return res.status(r.status).json({error:d?.error?.message||`what3words ${r.status}`,code:d?.error?.code||""});
   res.json({words:d.words,lat:+d.coordinates.lat,lon:+d.coordinates.lng,country:d.country||"",nearestPlace:d.nearestPlace||"",map:d.map||""});
- }catch(e){res.status(500).json({error:e.message})}
+ }catch(e){res.status(500).json({error:e.message,code:"ServerError"})}
 });
 
 app.get("/api/route", async (req,res)=>{
@@ -196,4 +196,4 @@ app.post("/api/plan", async (req,res)=>{
 });
 
 const port=process.env.PORT||3000;
-app.listen(port,()=>console.log(`Urlaubsplaner 5.9.2 läuft auf http://localhost:${port}`));
+app.listen(port,()=>console.log(`Urlaubsplaner 5.9.3 läuft auf http://localhost:${port}`));

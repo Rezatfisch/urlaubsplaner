@@ -50,5 +50,8 @@ Der Supabase Secret-/Service-Role-Key wird nicht im Browser verwendet.
 - bestehende 5.3-Daten-, Cloud- und Freigabefunktionen bleiben kompatibel
 
 
+## 5.9.3
+Automatische Erkennung von Adresse, Koordinaten und ///what3words. Verständliche deutsche Meldung bei nicht freigeschaltetem what3words-Tarif und direkter Link zur what3words-Karte. Adresse, GPS und Kartenklick bleiben ohne what3words nutzbar.
+
 ## 5.9.2
 Universelles Ziel hinzufügen: Adresse/Ort, GPS-Koordinaten, what3words (Server-Variable WHAT3WORDS_API_KEY) oder Kartenklick. Frei wählbarer Zieltyp, Aufenthaltszeit, Straßen-Abstecher und Einfügen an gewünschter Routenposition.
