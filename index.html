@@ -7,7 +7,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <link rel="apple-touch-icon" href="icon-192.png">
-  <title>Urlaubsplaner 5.2</title>
+  <title>Urlaubsplaner 5.3</title>
   <link rel="manifest" href="manifest.json">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <style>
@@ -54,13 +54,52 @@
     .kpiGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px}.kpi{padding:10px;background:var(--soft);border-radius:12px}.kpi b{display:block;font-size:1.08rem}
     .alert{padding:9px;border-radius:10px;background:#fff6df;border:1px solid #ead39b;margin:6px 0}.good{background:#eef9f1;border-color:#b8dfc1}
     .miniTable{width:100%;border-collapse:collapse}.miniTable td,.miniTable th{padding:7px;border-bottom:1px solid var(--line);text-align:left}
-    @media(max-width:900px){.span4,.span5,.span7,.span8,.span12{grid-column:1/-1}.row,.row3,.routeTotals{grid-template-columns:1fr}#map{height:390px}.stop{grid-template-columns:34px 1fr}.stopactions{grid-column:2}}
+
+    /* 5.3 Startseite & Bereichsnavigation */
+    .app-hidden{display:none!important}
+    .home-hero{grid-column:1/-1;background:linear-gradient(135deg,#172033 0%,#28476c 58%,#2d7f80 100%);color:#fff;overflow:hidden;position:relative}
+    .home-hero:after{content:"";position:absolute;width:220px;height:220px;border-radius:50%;background:rgba(255,255,255,.08);right:-70px;top:-90px}
+    .home-hero .small{color:rgba(255,255,255,.78)}
+    .hero-top{display:flex;justify-content:space-between;gap:14px;align-items:flex-start}.hero-title{font-size:1.35rem;font-weight:900;margin-bottom:4px}
+    .hero-pill{padding:6px 10px;border-radius:999px;background:rgba(255,255,255,.14);font-size:.78rem;white-space:nowrap}
+    .hero-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:14px}.hero-kpi{background:rgba(255,255,255,.11);border:1px solid rgba(255,255,255,.15);border-radius:13px;padding:10px}.hero-kpi b{display:block;font-size:1.05rem}.hero-kpi span{font-size:.72rem;opacity:.82}
+    .dash-wrap{grid-column:1/-1}.dash-head{display:flex;justify-content:space-between;align-items:end;gap:10px;margin-bottom:10px}.dash-head h2{font-size:1.18rem;margin:0}.dash-head .small{text-align:right}
+    .tile-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.nav-tile{border:1px solid var(--line);background:#fff;border-radius:16px;padding:14px;text-align:left;min-height:116px;box-shadow:0 2px 10px rgba(15,23,42,.05);transition:.16s transform,.16s box-shadow}.nav-tile:hover{transform:translateY(-1px);box-shadow:0 5px 16px rgba(15,23,42,.09)}
+    .nav-tile .ico{font-size:1.65rem;display:block;margin-bottom:8px}.nav-tile b{display:block;font-size:.95rem}.nav-tile span{display:block;color:var(--muted);font-size:.76rem;line-height:1.25;margin-top:4px;font-weight:500}
+    #areaHeader{grid-column:1/-1;padding:10px 12px;position:sticky;top:76px;z-index:900}.area-bar{display:flex;gap:9px;align-items:center}.area-bar button{width:auto;margin:0}.area-title{font-weight:900;font-size:1.05rem}.area-sub{font-size:.78rem;color:var(--muted)}
+    .quickbar{grid-column:1/-1;display:flex;gap:7px;overflow:auto;padding:2px 0 4px}.quickbar button{width:auto;white-space:nowrap;margin:0;padding:8px 11px;background:#fff}
+    @media(max-width:900px){.span4,.span5,.span7,.span8,.span12{grid-column:1/-1}.row,.row3,.routeTotals{grid-template-columns:1fr}#map{height:390px}.stop{grid-template-columns:34px 1fr}.stopactions{grid-column:2}.tile-grid{grid-template-columns:repeat(2,1fr)}.hero-kpis{grid-template-columns:repeat(2,1fr)}.nav-tile{min-height:110px;padding:12px}.dash-head{align-items:flex-start;flex-direction:column}.dash-head .small{text-align:left}#areaHeader{top:72px}}
+    @media(max-width:390px){.nav-tile b{font-size:.88rem}.nav-tile span{font-size:.72rem}.nav-tile{min-height:108px}}
+
   </style>
 </head>
 <body>
-<header><div><div class="title"><img class="app-logo" src="icon-192.png" alt="">Urlaubsplaner</div><div class="small">Reisen · Route · Stellplätze · Kosten · KI</div></div><div class="head-actions"><button id="installApp" class="primary" type="button" title="Urlaubsplaner als App installieren">⬇ App installieren</button><div class="badge">Version 5.2</div></div></header>
+<header><div><div class="title" onclick="showArea('home')" role="button" tabindex="0" title="Zur Übersicht"><img class="app-logo" src="icon-192.png" alt="">Urlaubsplaner</div><div class="small">Deine Reise. Perfekt geplant.</div></div><div class="head-actions"><button id="installApp" class="primary" type="button" title="Urlaubsplaner als App installieren">⬇ App installieren</button><div class="badge">Version 5.3</div></div></header>
 
 <main><div class="grid">
+<section id="homeHero" class="card home-hero">
+  <div class="hero-top"><div><div class="hero-title" id="homeTripTitle">Bereit für die nächste Reise?</div><div class="small" id="homeTripMeta">Lege eine Reise an oder wähle eine vorhandene Reise.</div></div><div class="hero-pill">Version 5.3</div></div>
+  <div class="hero-kpis"><div class="hero-kpi"><b id="homeDays">–</b><span>Tage</span></div><div class="hero-kpi"><b id="homeKm">–</b><span>Strecke</span></div><div class="hero-kpi"><b id="homeStops">–</b><span>Stopps</span></div><div class="hero-kpi"><b id="homeCosts">–</b><span>Etappenkosten</span></div></div>
+</section>
+<section id="homeDashboard" class="card dash-wrap">
+  <div class="dash-head"><div><h2>Was möchtest du machen?</h2><div class="small">Alle Funktionen der Version 5.2 bleiben erhalten – jetzt übersichtlich nach Bereichen sortiert.</div></div><div class="small">Tippe auf eine Kachel</div></div>
+  <div class="tile-grid">
+    <button class="nav-tile" onclick="showArea('reisen')"><span class="ico">🧳</span><b>Meine Reisen</b><span>Anlegen, auswählen, suchen & verwalten</span></button>
+    <button class="nav-tile" onclick="showArea('route')"><span class="ico">🗺️</span><b>Route & Karte</b><span>Etappen, Karte, Routing & Timeline</span></button>
+    <button class="nav-tile" onclick="showArea('ki')"><span class="ico">✨</span><b>KI-Reiseplanung</b><span>Planen, optimieren & Reisecheck</span></button>
+    <button class="nav-tile" onclick="showArea('fahrzeug')"><span class="ico">🚐</span><b>Wohnmobil & Fahrzeug</b><span>Profil, Reichweite, Strom & Versorgung</span></button>
+    <button class="nav-tile" onclick="showArea('kosten')"><span class="ico">💶</span><b>Kosten & Budget</b><span>Diesel, Zahlungen & Tageskosten</span></button>
+    <button class="nav-tile" onclick="showArea('buchungen')"><span class="ico">🏕️</span><b>Übernachten & Buchungen</b><span>Stellplätze, Hotels & Reservierungen</span></button>
+    <button class="nav-tile" onclick="showArea('vorbereitung')"><span class="ico">📋</span><b>Reisevorbereitung</b><span>Packliste, Dokumente & Ländercheck</span></button>
+    <button class="nav-tile" onclick="showArea('unterwegs')"><span class="ico">🌦️</span><b>Unterwegs</b><span>Wetter, Maut, Fähren & Ruhetage</span></button>
+    <button class="nav-tile" onclick="showArea('gemeinsam')"><span class="ico">👥</span><b>Gemeinsam reisen</b><span>Cloud, Synchronisierung & Freigaben</span></button>
+    <button class="nav-tile" onclick="showArea('journal')"><span class="ico">📖</span><b>Reisejournal</b><span>Erlebnisse, Favoriten & Fotomotive</span></button>
+    <button class="nav-tile" onclick="showArea('export')"><span class="ico">💾</span><b>Sicherung & Export</b><span>Backup, GPX, Kalender, Druck & Teilen</span></button>
+    <button class="nav-tile" onclick="showArea('ki')"><span class="ico">🤖</span><b>KI-Assistent</b><span>Fragen zur aktuellen Reise stellen</span></button>
+  </div>
+</section>
+<section id="areaHeader" class="card app-hidden"><div class="area-bar"><button class="ghost" onclick="showArea('home')">← Übersicht</button><div><div class="area-title" id="areaTitle">Bereich</div><div class="area-sub" id="areaSub"></div></div></div></section>
+<div id="quickbar" class="quickbar app-hidden"><button onclick="showArea('reisen')">🧳 Reisen</button><button onclick="showArea('route')">🗺️ Route</button><button onclick="showArea('ki')">✨ KI</button><button onclick="showArea('kosten')">💶 Kosten</button><button onclick="showArea('unterwegs')">🌦️ Unterwegs</button><button onclick="showArea('gemeinsam')">👥 Gemeinsam</button></div>
 <section class="card span12" id="cloudCard">
  <h2>☁️ Benutzerkonto & Synchronisierung</h2>
  <div id="cloudLoggedOut">
@@ -243,14 +282,14 @@ function migrate(){
  const old=localStorage.getItem(OLDKEY); if(old){try{const a=JSON.parse(old);a.forEach(t=>(t.stops||[]).forEach(s=>{s.nightCost=s.nightCost||0;s.tollCost=s.tollCost||0;s.otherCost=s.otherCost||0}));localStorage.setItem(KEY,JSON.stringify(a))}catch{}}
 }
 function load(){try{return JSON.parse(localStorage.getItem(KEY)||"[]")}catch{return []}}
-function save(a){localStorage.setItem(KEY,JSON.stringify(a));render()}
+function save(a){localStorage.setItem(KEY,JSON.stringify(a));render();updateHomeSummary?.()}
 function getSelected(){return load().find(x=>x.id===selectedId)}
 
 function addTrip(){
  const t={id:Date.now(),title:$("title").value.trim()||"Unbenannte Reise",start:$("start").value,end:$("end").value,origin:$("origin").value.trim(),destination:$("destination").value.trim(),mode:$("mode").value,stops:[]};
  const a=load();a.push(t);selectedId=t.id;save(a);
 }
-function selectTrip(id){selectedId=id;lastRouteKm=lastRouteHours=0;render()}
+function selectTrip(id){selectedId=id;lastRouteKm=lastRouteHours=0;render();updateHomeSummary?.()}
 function removeSelectedTrip(){if(selectedId==null||!confirm("Diese Reise wirklich löschen?"))return;const a=load().filter(x=>x.id!==selectedId);selectedId=a[0]?.id??null;save(a)}
 function addStop(){
  const a=load(),t=a.find(x=>x.id===selectedId);if(!t){alert("Bitte zuerst eine Reise wählen.");return}
@@ -504,7 +543,67 @@ function render(){
  $("stops").innerHTML=t.stops.length?t.stops.map((s,i)=>`<div class="stop"><div class="stopnum">${i+1}</div><div><div class="stop-title">${esc(s.place)}</div><div class="small">${esc(s.date||"Datum offen")} · ${esc(s.type)}</div>${s.note?`<div style="margin-top:4px">${esc(s.note)}</div>`:""}<span class="tag">${Number.isFinite(s.lat)&&Number.isFinite(s.lon)?"📍 Ort gefunden":"⚠️ keine Koordinaten"}</span>${s.nightCost?`<span class="tag">🏕 ${(+s.nightCost).toFixed(2)} €</span>`:""}${s.tollCost?`<span class="tag">🛣 ${(+s.tollCost).toFixed(2)} €</span>`:""}${s.otherCost?`<span class="tag">€ ${(+s.otherCost).toFixed(2)}</span>`:""}</div><div class="stopactions"><button onclick="editStop(${s.id})">✎</button><button onclick="moveStop(${s.id},-1)">↑</button><button onclick="moveStop(${s.id},1)">↓</button><button onclick="delStop(${s.id})">×</button></div></div>`).join(""):'<div class="small">Noch keine Etappen vorhanden.</div>';
  updateMap(t);renderTimeline(t);renderExtras();render42();
 }
-window.addEventListener("load",()=>{migrate();initMap();loadVehicle();render()});
+
+const AREA_INFO={
+ home:["Übersicht","Deine Reise auf einen Blick"],
+ reisen:["🧳 Meine Reisen","Reisen anlegen, auswählen und verwalten"],
+ route:["🗺️ Route & Karte","Etappen, Karte, Routing und Timeline"],
+ ki:["✨ KI-Reiseplanung","Reise planen, optimieren und prüfen"],
+ fahrzeug:["🚐 Wohnmobil & Fahrzeug","Fahrzeugprofil, Reichweite, Strom und Versorgung"],
+ kosten:["💶 Kosten & Budget","Reisekosten, Zahlungen, Budget und Tageskosten"],
+ buchungen:["🏕️ Übernachten & Buchungen","Buchungen und Übernachtungsplanung"],
+ vorbereitung:["📋 Reisevorbereitung","Packen, Dokumente, Reisende und Checklisten"],
+ unterwegs:["🌦️ Unterwegs","Wetter, Umgebung, Maut, Fähren und Fahrtage"],
+ gemeinsam:["👥 Gemeinsam reisen","Persönliche Cloud-Sicherung und gemeinsame Reisen"],
+ journal:["📖 Reisejournal","Erlebnisse, Favoriten, Fotos und Wünsche"],
+ export:["💾 Sicherung & Export","Backup, Export, Kalender, Drucken und Teilen"]
+};
+function detectArea(section){
+ if(section.id==="cloudCard")return "gemeinsam";
+ if(section.id==="editPanel")return "route";
+ if(section.querySelector("#map"))return "route";
+ const h=(section.querySelector("h2")?.textContent||"").toLowerCase();
+ if(h.includes("gemeinsame reisen"))return "gemeinsam";
+ if(h.includes("neue reise")||h.includes("reise-cockpit")||h.includes("reisesuche")||h.includes("duplizieren"))return "reisen";
+ if(h.includes("etappe / zwischenziel")||h.includes("reise-timeline"))return "route";
+ if(h.includes("fahrzeugprofil")||h.includes("tank & reichweite")||h.includes("versorgung")||h.includes("stromplanung")||h.includes("tankstopp"))return "fahrzeug";
+ if(h.includes("komplette reise automatisch")||h.includes("ki-reiseplan")||h.includes("ki-reisecheck"))return "ki";
+ if(h.includes("reisekosten")||h.includes("reisebudget")||h.includes("zahlungen")||h.includes("kosten pro tag"))return "kosten";
+ if(h.includes("buchungen")||h.includes("übernachtungsstatus"))return "buchungen";
+ if(h.includes("packliste")||h.includes("reisedokumente")||h.includes("reisende")||h.includes("haustiere")||h.includes("notfallkontakte")||h.includes("erinnerungen")||h.includes("länder-checkliste")||h.includes("vorräte")||h.includes("einkaufsliste")||h.includes("essensplanung"))return "vorbereitung";
+ if(h.includes("umgebung entdecken")||h.includes("wetter")||h.includes("maut & vignetten")||h.includes("fähren")||h.includes("ruhetage")||h.includes("tageskilometer"))return "unterwegs";
+ if(h.includes("favoriten")||h.includes("reisejournal")||h.includes("foto-merkliste")||h.includes("wunschliste"))return "journal";
+ if(h.includes("sicherung")||h.includes("gpx-export")||h.includes("reise teilen")||h.includes("kalenderexport")||h.includes("druckansicht"))return "export";
+ return "reisen";
+}
+function showArea(area){
+ const home=area==="home";
+ document.getElementById("homeHero")?.classList.toggle("app-hidden",!home);
+ document.getElementById("homeDashboard")?.classList.toggle("app-hidden",!home);
+ document.getElementById("areaHeader")?.classList.toggle("app-hidden",home);
+ document.getElementById("quickbar")?.classList.toggle("app-hidden",home);
+ document.querySelectorAll("main section.card").forEach(sec=>{
+   if(["homeHero","homeDashboard","areaHeader"].includes(sec.id))return;
+   const a=sec.dataset.area||detectArea(sec);sec.dataset.area=a;
+   sec.classList.toggle("app-hidden",home||a!==area);
+ });
+ if(!home){const info=AREA_INFO[area]||["Bereich",""];document.getElementById("areaTitle").textContent=info[0];document.getElementById("areaSub").textContent=info[1];window.scrollTo({top:0,behavior:"smooth"});}
+ else{updateHomeSummary();window.scrollTo({top:0,behavior:"smooth"});}
+ if(area==="route"&&window.map)setTimeout(()=>{try{map.invalidateSize()}catch{}},180);
+ localStorage.setItem("urlaubsplaner_area_v53",area);
+}
+function updateHomeSummary(){
+ const t=getSelected?.();
+ const title=document.getElementById("homeTripTitle"),meta=document.getElementById("homeTripMeta");
+ if(!title)return;
+ if(!t){title.textContent="Bereit für die nächste Reise?";meta.textContent="Lege eine Reise an oder wähle eine vorhandene Reise.";homeDays.textContent=homeKm.textContent=homeStops.textContent=homeCosts.textContent="–";return}
+ title.textContent=t.title||"Aktuelle Reise";meta.textContent=`${t.start||"Datum offen"} – ${t.end||"Datum offen"} · ${t.origin||"Start offen"} → ${t.destination||"Ziel offen"} · ${t.mode||""}`;
+ let days="–";if(t.start&&t.end){const a=new Date(t.start+"T12:00:00"),b=new Date(t.end+"T12:00:00");days=Math.max(1,Math.round((b-a)/86400000)+1)}
+ homeDays.textContent=days;homeKm.textContent=t.routeSummary?.distanceKm?Math.round(t.routeSummary.distanceKm)+" km":"–";homeStops.textContent=(t.stops||[]).length;
+ const cost=(t.stops||[]).reduce((n,x)=>n+(+x.nightCost||0)+(+x.tollCost||0)+(+x.otherCost||0),0);homeCosts.textContent=cost.toFixed(0)+" €";
+}
+
+window.addEventListener("load",()=>{migrate();initMap();loadVehicle();render();updateHomeSummary();showArea("home")});
 </script>
 
 <script type="module">
